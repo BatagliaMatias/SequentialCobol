@@ -143,14 +143,10 @@
             STOP RUN.
 
        INICIO.
-      *     OPEN INPUT HS1.
-      *     OPEN INPUT HS2.
-      *     OPEN INPUT HS3.
-      *     OPEN INPUT VAL.
+           OPEN INPUT HS1, HS2, HS3.
+           OPEN INPUT VAL.
            OPEN INPUT CONS.
-           OPEN OUTPUT LIST-TOT.
-           OPEN OUTPUT LIST-HOR.
-           OPEN OUTPUT ESTADIS.
+           OPEN OUTPUT LIST-TOT, LIST-HOR, ESTADIS.
 
        CARGAR-T-CONS.
            MOVE REG-CONS TO T-CONS-FLD(CONS-SUB).
@@ -172,13 +168,9 @@
            END-PERFORM. 
 
        FIN.
-      *     CLOSE HS1.
-      *     CLOSE HS2.
-      *     CLOSE HS3.
-      *     CLOSE VAL.
+           CLOSE HS1, HS2, HS3.
+           CLOSE VAL.
            CLOSE CONS.
-           CLOSE LIST-TOT.
-           CLOSE LIST-HOR.
-           CLOSE ESTADIS.
+           CLOSE LIST-TOT, LIST-HOR, ESTADIS.
 
        END PROGRAM TP-1.
