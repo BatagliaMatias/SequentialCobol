@@ -1,10 +1,3 @@
-      ******************************************************************
-      * Author:
-      * Date:
-      * Purpose:
-      * Tectonics: cobc
-      ******************************************************************
-
        IDENTIFICATION DIVISION.
 
        PROGRAM-ID. TP-1.
@@ -123,8 +116,9 @@
        77 CONS-ESTADO                  PIC XX.
 
        01 WS-T-CONS.
-           03 WS-T-CONS-CAMPO OCCURS 1000
-                              INDEXED BY WS-T-CONS-CAMPO-INDEX.
+           03 WS-T-CONS-CAMPO OCCURS 4 TIMES
+                              ASCENDING KEY IS WS-T-CONS-CONS
+                              INDEXED BY WS-T-CONS-I.
                05 WS-T-CONS-CONS       PIC 9(3).
                05 WS-T-CONS-FECHA-ALTA PIC X(8).
                05 WS-T-CONS-NOMBRE     PIC X(25).
@@ -136,8 +130,7 @@
 
       * CONTADORES:
        01 WS-G                         PIC 9(4).
-       01 WS-H                         PIC 9(4).
-       01 WS-I                         PIC 9(4).
+       01 WS-I                         PIC 9(4) VALUE IS 1.
        01 WS-J                         PIC 9(4).
        01 WS-K                         PIC 9(4).
 
@@ -199,11 +192,8 @@
        040-ORDENAR-T-CONS.
       * BURBUJEO
            SUBTRACT 1 FROM WS-I.
-           MOVE WS-I TO WS-H.
-           MOVE WS-I TO WS-G.
-           SUBTRACT 1 FROM WS-H.
            PERFORM VARYING WS-G FROM 1 BY 1 UNTIL WS-G = WS-I
-               PERFORM VARYING WS-J FROM WS-G BY 1 UNTIL WS-J > WS-H
+               PERFORM VARYING WS-J FROM WS-G BY 1 UNTIL WS-J > WS-I
                    IF WS-T-CONS-CONS(WS-J) < WS-T-CONS-CONS(WS-G) THEN
                        MOVE WS-T-CONS-CAMPO(WS-G)
                            TO WS-T-CONS-CAMPO-TEMP
@@ -212,8 +202,8 @@
                        MOVE WS-T-CONS-CAMPO-TEMP
                            TO WS-T-CONS-CAMPO(WS-J)
                    END-IF
-               END-PERFORM                                           
-           END-PERFORM. 
+               END-PERFORM
+           END-PERFORM.
 
        050-FIN.
            CLOSE HS1, HS2, HS3.
@@ -265,8 +255,11 @@
            PERFORM 120-DET-MENOR-CONS.
            SEARCH ALL WS-T-CONS-CAMPO
                AT END DISPLAY "ERROR: Consultor no encontrado"
-               WHEN WS-T-CONS-CONS(WS-I) = WS-MENOR-CONS
-               CONTINUE.
+               WHEN WS-T-CONS-CONS(WS-T-CONS-I) = WS-MENOR-CONS
+               DISPLAY "Encontrado: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
+           PERFORM 070-LEER-HS1.
+           PERFORM 080-LEER-HS2.
+           PERFORM 090-LEER-HS3.
 
        120-DET-MENOR-CONS.
            MOVE HS1-CONS TO WS-MENOR-CONS.
@@ -274,5 +267,6 @@
                MOVE HS2-CONS TO WS-MENOR-CONS.
            IF WS-MENOR-CONS > HS3-CONS
                MOVE HS3-CONS TO WS-MENOR-CONS.
+           DISPLAY "Menor consultor: " WS-MENOR-CONS.
 
        END PROGRAM TP-1.
