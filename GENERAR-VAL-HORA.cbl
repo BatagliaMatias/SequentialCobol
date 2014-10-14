@@ -5,6 +5,8 @@
        ENVIRONMENT DIVISION.
 
        CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           DECIMAL-POINT IS COMMA.
 
        INPUT-OUTPUT SECTION.
 
@@ -30,34 +32,34 @@
       
        MAIN-PROCEDURE.
 
-         DISPLAY "Generando VAL-HORA.DAT".
-         OPEN OUTPUT VAL.
+           DISPLAY "Generando VAL-HORA.DAT".
+           OPEN OUTPUT VAL.
 
-         MOVE "099" TO VAL-CONS.
-         MOVE "2014/01/15" TO VAL-FEC-DESDE.
-         MOVE "2014/10/13" TO VAL-FEC-HASTA.
-         MOVE 30 TO VAL-VALOR-HORA.
-         WRITE REG-VAL.
+           MOVE 1 TO VAL-CONS.
+           MOVE "2013/03/13" TO VAL-FEC-DESDE.
+           MOVE "2014/10/13" TO VAL-FEC-HASTA.
+           MOVE 30 TO VAL-VALOR-HORA.
+           WRITE REG-VAL.
 
-         MOVE "049" TO VAL-CONS.
-         MOVE "2012/02/15" TO VAL-FEC-DESDE.
-         MOVE "2014/10/13" TO VAL-FEC-HASTA.
-         MOVE 35 TO VAL-VALOR-HORA.
-         WRITE REG-VAL.
+           MOVE 49 TO VAL-CONS.
+           MOVE "2012/02/15" TO VAL-FEC-DESDE.
+           MOVE "2014/10/13" TO VAL-FEC-HASTA.
+           MOVE 35 TO VAL-VALOR-HORA.
+           WRITE REG-VAL.
 
-         MOVE "050" TO VAL-CONS.
-         MOVE "2010/10/15" TO VAL-FEC-DESDE.
-         MOVE "2014/10/13" TO VAL-FEC-HASTA.
-         MOVE 25 TO VAL-VALOR-HORA.
-         WRITE REG-VAL.
+           MOVE 50 TO VAL-CONS.
+           MOVE "2010/10/15" TO VAL-FEC-DESDE.
+           MOVE "2014/10/13" TO VAL-FEC-HASTA.
+           MOVE 25 TO VAL-VALOR-HORA.
+           WRITE REG-VAL.
 
-         MOVE "001" TO VAL-CONS.
-         MOVE "2013/03/13" TO VAL-FEC-DESDE.
-         MOVE "2014/10/13" TO VAL-FEC-HASTA.
-         MOVE 30 TO VAL-VALOR-HORA.
-         WRITE REG-VAL.
+           MOVE 99 TO VAL-CONS.
+           MOVE "2014/01/15" TO VAL-FEC-DESDE.
+           MOVE "2014/10/13" TO VAL-FEC-HASTA.
+           MOVE 30 TO VAL-VALOR-HORA.
+           WRITE REG-VAL.
 
-         CLOSE VAL.
-         STOP RUN.
+           CLOSE VAL.
+           STOP RUN.
 
        END PROGRAM GENERAR-VAL-HORA.
