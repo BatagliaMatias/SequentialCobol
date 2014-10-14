@@ -31,14 +31,11 @@
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS CONS-ESTADO.
 
-           SELECT LIST-TOT ASSIGN TO "LISTADO_TOTALES.DAT"
-               ORGANIZATION IS SEQUENTIAL.
+           SELECT LIS-IMP ASSIGN TO "LISTADO_TOTALES.DAT"
+               ORGANIZATION IS LINE SEQUENTIAL.
 
-           SELECT LIST-HOR ASSIGN TO "LISTADO_HORAS.DAT"
-               ORGANIZATION IS SEQUENTIAL.
-
-           SELECT ESTADIS ASSIGN TO "ESTADISTICA.DAT"
-               ORGANIZATION IS SEQUENTIAL.
+           SELECT LIS-NOM ASSIGN TO "LISTADO_HORAS.DAT"
+               ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
 
@@ -81,17 +78,13 @@
            03 CONS-FECHA-ALTA          PIC X(8).
            03 CONS-NOMBRE              PIC X(25).
 
-       FD LIST-TOT
+       FD LIS-IMP
            LABEL RECORD OMITTED.
-       01 LIST-TOT-LINEA               PIC X(90).
+       01 LIS-IMP-LINEA               PIC X(80).
 
-       FD LIST-HOR
+       FD LIS-NOM
            LABEL RECORD OMITTED.
-       01 LIST-HOR-LINEA               PIC X(90).
-
-       FD ESTADIS
-           LABEL RECORD OMITTED.
-       01 ESTADIS-LINEA                PIC X(90).
+       01 LIS-NOM-LINEA               PIC X(80).
 
        WORKING-STORAGE SECTION.
 
@@ -115,8 +108,11 @@
            88 EOF                             VALUE "SI".
        77 CONS-ESTADO                  PIC XX.
 
+       01 WS-T-CONS-COUNT              PIC 9(4) VALUE IS 0.
+
        01 WS-T-CONS.
-           03 WS-T-CONS-CAMPO OCCURS 4 TIMES
+           03 WS-T-CONS-CAMPO OCCURS 0 TO 1000 TIMES
+                              DEPENDING ON WS-T-CONS-COUNT
                               ASCENDING KEY IS WS-T-CONS-CONS
                               INDEXED BY WS-T-CONS-I.
                05 WS-T-CONS-CONS       PIC 9(3).
@@ -138,6 +134,96 @@
        01 WS-TOT-GRAL-HS               PIC 9(7)V99 VALUE IS ZERO.
 
        01 WS-MENOR-CONS                PIC 9(3).
+
+       01 LI-ENC1.
+           03 FILLER                   PIC X(7) VALUE "Fecha: ".
+           03 LI-ENC-FECHA-AAAA            PIC 9999.
+           03 FILLER                   PIC X VALUE "/".
+           03 LI-ENC-FECHA-MM              PIC 99.
+           03 FILLER                   PIC X VALUE "/".
+           03 LI-ENC-FECHA-DD              PIC 99.
+           03 FILLER                   PIC X(37) VALUE ALL " ".
+           03 FILLER                   PIC X(9) VALUE "Hoja nro ".
+           03 LI-HOJA                  PIC 99 VALUE IS 0.
+
+       01 LI-ENC2.
+           03 FILLER                   PIC X(7) VALUE ALL " ".
+           03 FILLER                   PIC X(73) VALUE "LISTADO DE TOTAL
+      -                                                "LES DE HORAS".
+
+       01 LI-ENC3.
+           03 FILLER                   PIC X(80) VALUE ALL " ".
+
+       01 LI-NRO-LINEA                 PIC 99 VALUE IS 0.
+
+       01 LI-LINEA1.
+           03 FILLER              PIC X(16) VALUE IS "COD. CONSULTOR: ".
+           03 LI-LINEA1-CONS      PIC X(3).
+
+       01 LI-LINEA2.
+           03 FILLER              PIC X(7) VALUE IS "FECHA: ".
+           03 LI-LINEA2-AAAA      PIC 9999.
+           03 FILLER              PIC X VALUE "/".
+           03 LI-LINEA2-MM        PIC 99.
+           03 FILLER              PIC X VALUE "/".
+           03 LI-LINEA2-DD        PIC 99.
+
+       01 LI-LINEA3.
+           03 FILLER              PIC X(14) VALUE IS "COD. CLIENTE: ".
+           03 LI-LINEA3-CLI       PIC X(4).
+
+       01 LI-LINEA4.
+           03 FILLER              PIC X(13) VALUE IS "TOTAL HORAS: ".
+           03 LI-LINEA4-HORAS     PIC 9(5)V99.
+
+       01 LI-LINEA5.
+           03 FILLER              PIC X(13) VALUE IS "TOTAL VALOR: ".
+           03 LI-LINEA5-VALOR     PIC 9(7)V99.
+
+       01 LN-ENC1.
+           03 FILLER                   PIC X(7) VALUE "Fecha: ".
+           03 LN-ENC-FECHA-AAAA        PIC 9999.
+           03 FILLER                   PIC X VALUE "/".
+           03 LN-ENC-FECHA-MM          PIC 99.
+           03 FILLER                   PIC X VALUE "/".
+           03 LN-ENC-FECHA-DD          PIC 99.
+           03 FILLER                   PIC X(37) VALUE ALL " ".
+           03 FILLER                   PIC X(9) VALUE "Hoja nro ".
+           03 LN-HOJA                  PIC 99 VALUE IS 0.
+
+       01 LN-ENC2.
+           03 FILLER PIC X(7) VALUE ALL " ".
+           03 FILLER PIC X(73) VALUE "TIMES - LISTADO HORAS TRABAJADAS".
+
+       01 LN-ENC3.
+           03 FILLER                   PIC X(80) VALUE ALL " ".
+
+       01 LN-NRO-LINEA                 PIC 99 VALUE IS 0.
+
+       01  WS-FECHA-HOY.
+           03  WS-FECHA-HOY-AAAA       PIC  9(4).
+           03  WS-FECHA-HOY-MM         PIC  9(2).
+           03  WS-FECHA-HOY-DD         PIC  9(2).
+
+       01 WS-MENOR-FECHA               PIC X(8).
+
+       01 WS-MENOR-CLIENTE             PIC 9(4).
+
+       01 WS-TOT-FECHA-HS              PIC 9(7)V99 VALUE IS ZERO.
+
+       01 WS-TOTAL-HORAS               PIC 9(5)V99.
+
+       01 WS-LIS-HS.
+           03 WS-LIS-HS-CONS                 PIC 9(3).
+           03 WS-LIS-HS-FECHA                PIC X(8).
+           03 WS-LIS-HS-CLIENTE              PIC 9(4).
+           03 WS-LIS-HS-CANT-HORAS           PIC 9(2)V99.
+           03 WS-LIS-HS-OBSERV               PIC X(30).
+
+       01 WS-VALOR                           PIC 9(5)V99.
+
+       01 LN-HORAS-CLI                       PIC 9(2)V99.
+       01 LN-VALOR-CLI                       PIC 9(5)V99.
 
        PROCEDURE DIVISION.
 
@@ -174,19 +260,19 @@
                DISPLAY "ERROR: No se pudo abrir el archivo CONSUL.DAT"
                DISPLAY "ERROR:   FILE-STATUS: " CONS-ESTADO
                STOP RUN.
-           OPEN OUTPUT LIST-TOT, LIST-HOR, ESTADIS.
+           OPEN OUTPUT LIS-IMP, LIS-NOM.
 
        020-LEER-CONS.
            READ CONS
                AT END MOVE 'SI' TO CONS-EOF.
            IF CONS-ESTADO NOT = ZERO AND 10
                DISPLAY "ERROR: No se pudo leer el archivo CONSUL.DAT"
-               DISPLAY "ERROR:   FILE-STATUS: " CONS-ESTADO
-               STOP RUN.
+               DISPLAY "ERROR:   FILE-STATUS: " CONS-ESTADO.
 
        030-CARGAR-T-CONS.
            MOVE REG-CONS TO WS-T-CONS-CAMPO(WS-I).
            ADD 1 TO WS-I.
+           ADD 1 TO WS-T-CONS-COUNT.
            PERFORM 020-LEER-CONS.
 
        040-ORDENAR-T-CONS.
@@ -209,9 +295,10 @@
            CLOSE HS1, HS2, HS3.
            CLOSE VAL.
            CLOSE CONS.
-           CLOSE LIST-TOT, LIST-HOR, ESTADIS.
+           CLOSE LIS-IMP, LIS-NOM.
 
        060-PROCESAR.
+           DISPLAY "Procesando..."
            PERFORM 070-LEER-HS1.
            PERFORM 080-LEER-HS2.
            PERFORM 090-LEER-HS3.
@@ -220,36 +307,44 @@
                AND HS2-EOF = "SI" AND HS3-EOF = "SI".
 
        070-LEER-HS1.
-           READ HS1
-               AT END MOVE 'SI' TO HS1-EOF.
-           IF HS1-ESTADO NOT = ZERO AND 10
-               DISPLAY "ERROR: No se pudo leer el archivo HS1.DAT"
-               DISPLAY "ERROR:   FILE-STATUS: " HS1-ESTADO
-               STOP RUN.
+           IF HS1-EOF = "NO"
+               DISPLAY "Leyendo archivo HS1..."
+               READ HS1
+                   AT END MOVE 'SI' TO HS1-EOF
+               IF HS1-ESTADO NOT = ZERO AND 10
+                   DISPLAY "ERROR: No se pudo leer el archivo HS1.DAT"
+                   DISPLAY "ERROR:   FILE-STATUS: " HS1-ESTADO
+               END-IF
+           END-IF.
 
        080-LEER-HS2.
-           READ HS2
-               AT END MOVE 'SI' TO HS2-EOF.
-           IF HS2-ESTADO NOT = ZERO AND 10
-               DISPLAY "ERROR: No se pudo leer el archivo HS2.DAT"
-               DISPLAY "ERROR:   FILE-STATUS: " HS3-ESTADO
-               STOP RUN.
+           IF HS2-EOF = "NO"
+               DISPLAY "Leyendo archivo HS2..."
+               READ HS2
+                   AT END MOVE 'SI' TO HS2-EOF
+               IF HS2-ESTADO NOT = ZERO AND 10
+                   DISPLAY "ERROR: No se pudo leer el archivo HS2.DAT"
+                   DISPLAY "ERROR:   FILE-STATUS: " HS3-ESTADO
+               END-IF
+           END-IF.
 
        090-LEER-HS3.
-           READ HS3
-               AT END MOVE 'SI' TO HS3-EOF.
-           IF HS3-ESTADO NOT = ZERO AND 10
-               DISPLAY "ERROR: No se pudo leer el archivo HS3.DAT"
-               DISPLAY "ERROR:   FILE-STATUS: " HS3-ESTADO
-               STOP RUN.
+           IF HS3-EOF = "NO"
+               DISPLAY "Leyendo archivo HS3..."
+               READ HS3
+                   AT END MOVE 'SI' TO HS3-EOF
+               IF HS3-ESTADO NOT = ZERO AND 10
+                   DISPLAY "ERROR: No se pudo leer el archivo HS3.DAT"
+                   DISPLAY "ERROR:   FILE-STATUS: " HS3-ESTADO
+               END-IF
+           END-IF.
 
        100-LEER-VAL.
            READ VAL
                AT END MOVE 'SI' TO VAL-EOF.
            IF VAL-ESTADO NOT = ZERO AND 10
                DISPLAY "ERROR: No se pudo leer el archivo VAL.DAT"
-               DISPLAY "ERROR:   FILE-STATUS: " VAL-ESTADO
-               STOP RUN.
+               DISPLAY "ERROR:   FILE-STATUS: " VAL-ESTADO.
 
        110-SUB-PROCESAR-1.
            PERFORM 120-DET-MENOR-CONS.
@@ -257,16 +352,133 @@
                AT END DISPLAY "ERROR: Consultor no encontrado"
                WHEN WS-T-CONS-CONS(WS-T-CONS-I) = WS-MENOR-CONS
                DISPLAY "Encontrado: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
-           PERFORM 070-LEER-HS1.
-           PERFORM 080-LEER-HS2.
-           PERFORM 090-LEER-HS3.
+           PERFORM 130-IMPRIM-ENCAB-LIS-IMP.
+           PERFORM 140-IMPRIM-ENCAB-LIS-NOM.
+           PERFORM 150-CONS UNTIL (HS1-EOF = "SI"
+               AND HS2-EOF = "SI" AND HS3-EOF = "SI")
+               OR (WS-MENOR-CONS NOT = HS1-CONS
+                   AND WS-MENOR-CONS NOT = HS2-CONS
+                   AND WS-MENOR-CONS NOT = HS3-CONS).
 
        120-DET-MENOR-CONS.
+           DISPLAY "Determinando menor CONS en archivos HS*..."
            MOVE HS1-CONS TO WS-MENOR-CONS.
            IF WS-MENOR-CONS > HS2-CONS
                MOVE HS2-CONS TO WS-MENOR-CONS.
            IF WS-MENOR-CONS > HS3-CONS
                MOVE HS3-CONS TO WS-MENOR-CONS.
-           DISPLAY "Menor consultor: " WS-MENOR-CONS.
+           DISPLAY " Menor consultor: " WS-MENOR-CONS.
+
+       130-IMPRIM-ENCAB-LIS-IMP.
+           DISPLAY "Imprimiendo encabezado LIS-IMP..."
+           MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
+           ADD 1 TO LI-HOJA.
+           MOVE WS-FECHA-HOY-AAAA TO LI-ENC-FECHA-AAAA.
+           MOVE WS-FECHA-HOY-MM TO LI-ENC-FECHA-MM.
+           MOVE WS-FECHA-HOY-DD TO LI-ENC-FECHA-DD.
+           WRITE LIS-IMP-LINEA FROM LI-ENC1.
+           WRITE LIS-IMP-LINEA FROM LI-ENC2.
+           WRITE LIS-IMP-LINEA FROM LI-ENC3.
+           MOVE 4 TO LI-NRO-LINEA.
+
+       140-IMPRIM-ENCAB-LIS-NOM.
+           DISPLAY "Imprimiendo encabezado LIS-NOM..."
+           MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
+           ADD 1 TO LN-HOJA.
+           MOVE WS-FECHA-HOY-AAAA TO LN-ENC-FECHA-AAAA.
+           MOVE WS-FECHA-HOY-MM TO LN-ENC-FECHA-MM.
+           MOVE WS-FECHA-HOY-DD TO LN-ENC-FECHA-DD.
+           WRITE LIS-NOM-LINEA FROM LN-ENC1.
+           WRITE LIS-NOM-LINEA FROM LN-ENC2.
+           WRITE LIS-NOM-LINEA FROM LN-ENC3.
+           MOVE 4 TO LN-NRO-LINEA.
+
+       150-CONS.
+           PERFORM 160-DET-MENOR-FECHA.
+           PERFORM 170-VALOR-FECHA UNTIL VAL-EOF = "SI"
+               OR WS-MENOR-CONS > VAL-CONS
+               OR WS-MENOR-FECHA > VAL-FEC-HASTA.
+           PERFORM 180-FECHA UNTIL (HS1-EOF = "SI" AND
+                                    HS2-EOF = "SI" AND
+                                    HS3-EOF = "SI") OR
+                                   (WS-MENOR-FECHA NOT = HS1-FECHA AND
+                                    WS-MENOR-FECHA NOT = HS2-FECHA AND
+                                    WS-MENOR-FECHA NOT = HS3-FECHA) OR
+                                   (WS-MENOR-CONS NOT = HS1-CONS AND
+                                    WS-MENOR-CONS NOT = HS2-CONS AND
+                                    WS-MENOR-CONS NOT = HS3-CONS).
+
+       160-DET-MENOR-FECHA.
+           IF WS-MENOR-CONS = HS1-CONS
+               MOVE HS1-FECHA TO WS-MENOR-FECHA
+           END-IF.
+           IF WS-MENOR-FECHA > HS2-FECHA
+               AND WS-MENOR-CONS = HS2-CONS
+               MOVE HS2-FECHA TO WS-MENOR-FECHA
+           END-IF.
+           IF WS-MENOR-FECHA > HS3-FECHA
+               AND WS-MENOR-CONS = HS3-CONS
+               MOVE HS3-FECHA TO WS-MENOR-FECHA
+           END-IF.
+
+       170-VALOR-FECHA.
+           PERFORM 100-LEER-VAL.
+
+       180-FECHA.
+           MOVE 0 TO WS-TOTAL-HORAS .
+           PERFORM 190-DET-MENOR-CLIE.
+           PERFORM 210-CLIENTES.
+
+       190-DET-MENOR-CLIE.
+           IF WS-MENOR-CONS = HS1-CONS AND WS-MENOR-FECHA = HS1-FECHA
+               MOVE HS1-CLIENTE TO WS-MENOR-CLIENTE
+           END-IF.
+           IF WS-MENOR-CLIENTE > HS2-CLIENTE AND
+              WS-MENOR-CONS = HS2-CONS AND
+              WS-MENOR-FECHA = HS2-FECHA
+               MOVE HS2-CLIENTE TO WS-MENOR-CLIENTE
+           END-IF.
+           IF WS-MENOR-CLIENTE > HS3-CLIENTE AND
+              WS-MENOR-CONS = HS3-CONS AND
+              WS-MENOR-FECHA = HS3-FECHA
+               MOVE HS3-CLIENTE TO WS-MENOR-CLIENTE
+           END-IF.
+
+       200-IMPR-ENCAB-CLIENTE.
+
+       210-CLIENTES.
+           PERFORM 220-HS1-CLIENTE UNTIL HS1-EOF = "SI" OR
+                                   WS-MENOR-CLIENTE NOT = HS1-CLIENTE OR
+                                   WS-MENOR-FECHA NOT = HS1-FECHA OR
+                                   WS-MENOR-CONS NOT = HS1-CONS.
+           PERFORM 230-HS2-CLIENTE UNTIL HS2-EOF = "SI" OR
+                                   WS-MENOR-CLIENTE NOT = HS2-CLIENTE OR
+                                   WS-MENOR-FECHA NOT = HS2-FECHA OR
+                                   WS-MENOR-CONS NOT = HS2-CONS.
+           PERFORM 240-HS3-CLIENTE UNTIL HS3-EOF = "SI" OR
+                                   WS-MENOR-CLIENTE NOT = HS3-CLIENTE OR
+                                   WS-MENOR-FECHA NOT = HS3-FECHA OR
+                                   WS-MENOR-CONS NOT = HS3-CONS.
+
+       220-HS1-CLIENTE.
+           MOVE REG-HS1 TO WS-LIS-HS.
+           PERFORM 250-PROCESAR-CLI.
+           PERFORM 070-LEER-HS1.
+
+       230-HS2-CLIENTE.
+           MOVE REG-HS2 TO WS-LIS-HS.
+           PERFORM 250-PROCESAR-CLI.
+           PERFORM 080-LEER-HS2.
+
+       240-HS3-CLIENTE.
+           MOVE REG-HS3 TO WS-LIS-HS.
+           PERFORM 250-PROCESAR-CLI.
+           PERFORM 090-LEER-HS3.
+
+       250-PROCESAR-CLI.
+           ADD WS-LIS-HS-CANT-HORAS TO LN-HORAS-CLI.
+           MULTIPLY WS-LIS-HS-CANT-HORAS BY VAL-VALOR-HORA
+                    GIVING WS-VALOR.
+           ADD WS-VALOR TO LN-VALOR-CLI.
 
        END PROGRAM TP-1.
