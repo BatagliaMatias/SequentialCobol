@@ -60,28 +60,28 @@
            OPEN OUTPUT HS1, HS2, HS3.
 
            MOVE 1 TO HS1-CONS.
-           MOVE "2014/10/13" TO HS1-FECHA.
+           MOVE "20141013" TO HS1-FECHA.
            MOVE 3 TO HS1-CLIENTE.
            MOVE 2 TO HS1-CANT-HORAS.
            MOVE "NINGUNA" TO HS1-OBSERV.
            WRITE REG-HS1.
 
            MOVE 99 TO HS1-CONS.
-           MOVE "2014/10/01" TO HS1-FECHA.
+           MOVE "20141001" TO HS1-FECHA.
            MOVE 1 TO HS1-CLIENTE.
            MOVE 0,5 TO HS1-CANT-HORAS.
            MOVE "NINGUNA" TO HS1-OBSERV.
            WRITE REG-HS1.
 
            MOVE 49 TO HS2-CONS.
-           MOVE "2014/10/01" TO HS2-FECHA.
+           MOVE "20141001" TO HS2-FECHA.
            MOVE 1 TO HS2-CLIENTE.
            MOVE 1 TO HS2-CANT-HORAS.
            MOVE "NINGUNA" TO HS2-OBSERV.
            WRITE REG-HS2.
 
            MOVE 50 TO HS3-CONS.
-           MOVE "2014/10/05" TO HS3-FECHA.
+           MOVE "20141005" TO HS3-FECHA.
            MOVE 2 TO HS3-CLIENTE.
            MOVE 1,5 TO HS3-CANT-HORAS.
            MOVE "NINGUNA" TO HS3-OBSERV.
