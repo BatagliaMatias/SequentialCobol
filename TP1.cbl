@@ -141,42 +141,41 @@
            03 LI-ENC-FECHA-MM              PIC 99.
            03 FILLER                   PIC X VALUE "/".
            03 LI-ENC-FECHA-DD              PIC 99.
-           03 FILLER                   PIC X(37) VALUE ALL " ".
+           03 FILLER                   PIC X(51) VALUE ALL " ".
            03 FILLER                   PIC X(9) VALUE "Hoja nro ".
            03 LI-HOJA                  PIC 99 VALUE IS 0.
 
        01 LI-ENC2.
-           03 FILLER                   PIC X(7) VALUE ALL " ".
-           03 FILLER                   PIC X(73) VALUE "LISTADO DE TOTAL
-      -                                                "LES DE HORAS".
+           03 FILLER                   PIC X(26) VALUE ALL " ".
+           03 FILLER      PIC X(27) VALUE "LISTADO DE TOTALES DE HORAS".
 
        01 LI-LINEA-BL             PIC X(80) VALUE ALL " ".
 
        01 LI-NRO-LINEA                 PIC 99 VALUE IS 0.
 
        01 LI-LINEA1.
-           03 FILLER              PIC X(16) VALUE IS "COD. CONSULTOR: ".
-           03 LI-LINEA1-CONS      PIC X(3).
+           03 FILLER              PIC X(20) VALUE IS "COD. CONSULTOR: ".
+           03 LI-LINEA1-CONS      PIC Z(3).
 
        01 LI-LINEA2.
-           03 FILLER              PIC X(7) VALUE IS "FECHA: ".
-           03 LI-LINEA2-AAAA      PIC 9999.
+           03 FILLER              PIC X(15) VALUE IS "FECHA: ".
+           03 LI-LINEA2-AA        PIC 99.
            03 FILLER              PIC X VALUE "/".
            03 LI-LINEA2-MM        PIC 99.
            03 FILLER              PIC X VALUE "/".
            03 LI-LINEA2-DD        PIC 99.
 
        01 LI-LINEA3.
-           03 FILLER              PIC X(14) VALUE IS "COD. CLIENTE: ".
-           03 LI-LINEA3-CLI       PIC X(4).
+           03 FILLER              PIC X(19) VALUE IS "COD. CLIENTE: ".
+           03 LI-LINEA3-CLI       PIC Z(4).
 
        01 LI-LINEA4.
-           03 FILLER              PIC X(13) VALUE IS "TOTAL HORAS: ".
-           03 LI-LINEA4-HORAS     PIC 9(5)V99.
+           03 FILLER              PIC X(17) VALUE IS "TOTAL HORAS: ".
+           03 LI-LINEA4-HORAS     PIC ZZ9,99.
 
        01 LI-LINEA5.
            03 FILLER              PIC X(13) VALUE IS "TOTAL VALOR: ".
-           03 LI-LINEA5-VALOR     PIC 9(7)V99.
+           03 LI-LINEA5-VALOR     PIC ZZZZZZ9,99.
 
        01 LN-ENC1.
            03 FILLER                   PIC X(7) VALUE "Fecha: ".
@@ -281,7 +280,8 @@
            03 WS-LIS-HS-CANT-HORAS           PIC 9(2)V99.
            03 WS-LIS-HS-OBSERV               PIC X(30).
 
-       01 WS-VALOR                           PIC 9(5)V99.
+       01 WS-VALOR                           PIC 9(7)V99.
+       01 WS-VALOR-HORA                      PIC 9(5)V99.
 
        01 LI-VALOR-TOTAL-GRAL                PIC 9(7)V99 VALUE IS ZERO.
        01 LI-HORAS-TOTAL-GRAL                PIC 9(5)V99 VALUE IS ZERO.
@@ -371,6 +371,8 @@
            PERFORM 100-LEER-VAL.
            MOVE 0 TO WS-TOT-GRAL-VAL.
            MOVE 0 TO WS-TOT-GRAL-HS.
+           PERFORM 130-IMPRIMIR-LI-ENCAB.
+           PERFORM 140-IMPRIMIR-LN-ENCAB.
            PERFORM 110-SUB-PROCESAR1 UNTIL HS1-EOF = "SI" AND
                                            HS2-EOF = "SI" AND
                                            HS3-EOF = "SI".
@@ -412,9 +414,6 @@
                DISPLAY " * NOMBRE: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
            MOVE 0 TO WS-TOT-CONS-VAL.
            MOVE 0 TO WS-TOT-CONS-HS.
-           PERFORM 140-IMPRIM-ENCAB-LIS-NOM.
-           PERFORM 130-IMPRIM-ENCAB-LIS-IMP.
-      *     PERFORM 145-IMPRIM-ENCAB-CLI-LIS-NOM.
            PERFORM 150-CONS UNTIL (HS1-EOF = "SI" AND
                                    HS2-EOF = "SI" AND
                                    HS3-EOF = "SI") OR
@@ -424,6 +423,7 @@
            PERFORM 300-IMPRIMIR-LN-TOTAL-CONS.
            ADD WS-TOT-CONS-VAL TO WS-TOT-GRAL-VAL.
            ADD WS-TOT-CONS-HS TO WS-TOT-GRAL-HS.
+           PERFORM 270-IMPRIMIR-LI-LINEAS-1-A-5.
 
        120-DET-MENOR-CONS.
            MOVE 999 TO WS-MENOR-CONS.
@@ -433,7 +433,7 @@
            IF WS-MENOR-CONS > HS3-CONS
                MOVE HS3-CONS TO WS-MENOR-CONS.
 
-       130-IMPRIM-ENCAB-LIS-IMP.
+       130-IMPRIMIR-LI-ENCAB.
            MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
            ADD 1 TO LI-HOJA.
            MOVE WS-FECHA-HOY-AAAA TO LI-ENC-FECHA-AAAA.
@@ -445,7 +445,7 @@
            WRITE LIS-IMP-LINEA FROM LI-LINEA-BL.
            MOVE 5 TO LI-NRO-LINEA.
 
-       140-IMPRIM-ENCAB-LIS-NOM.
+       140-IMPRIMIR-LN-ENCAB.
            MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
            ADD 1 TO LN-HOJA.
            MOVE WS-FECHA-HOY-AAAA TO LN-ENC-FECHA-AAAA.
@@ -467,18 +467,8 @@
            PERFORM 160-DET-MENOR-FECHA.
            PERFORM 170-VALOR-FECHA.
            MOVE 0 TO WS-TOT-FECHA-HS.
-           DISPLAY " * VALOR-FECHA: " WS-VALOR.
-           MOVE WS-MENOR-CONS TO LI-LINEA1-CONS.
-           WRITE LIS-IMP-LINEA FROM LI-LINEA1.
-           MOVE WS-MENOR-FECHA-AAAA TO LI-LINEA2-AAAA.
-           MOVE WS-MENOR-FECHA-MM TO LI-LINEA2-MM.
-           MOVE WS-MENOR-FECHA-DD TO LI-LINEA2-DD.
-           WRITE LIS-IMP-LINEA FROM LI-LINEA2.
-           MOVE WS-MENOR-FECHA-AAAA TO LN-LINEA2-AAAA.
-           MOVE WS-MENOR-FECHA-MM TO LN-LINEA2-MM.
-           MOVE WS-MENOR-FECHA-DD TO LN-LINEA2-DD.
-           WRITE LIS-IMP-LINEA FROM LN-LINEA2.
-           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
+           MOVE 0 TO WS-TOT-FECHA-VAL.
+           DISPLAY " * VALOR-HORA-FECHA: " WS-VALOR-HORA.
            PERFORM 180-FECHA UNTIL (HS1-EOF = "SI" AND
                                     HS2-EOF = "SI" AND
                                     HS3-EOF = "SI") OR
@@ -488,9 +478,9 @@
                                    (WS-MENOR-CONS NOT = HS1-CONS AND
                                     WS-MENOR-CONS NOT = HS2-CONS AND
                                     WS-MENOR-CONS NOT = HS3-CONS).
-           PERFORM 290-IMPRIMIR-LN-TOTAL-FECHA.
            ADD WS-TOT-FECHA-VAL TO WS-TOT-CONS-VAL.
            ADD WS-TOT-FECHA-HS TO WS-TOT-CONS-HS.
+           PERFORM 290-IMPRIMIR-LN-TOTAL-FECHA.
 
        160-DET-MENOR-FECHA.
            MOVE "99999999" TO WS-MENOR-FECHA .
@@ -512,12 +502,13 @@
                                        WS-MENOR-FECHA > VAL-FEC-HASTA.
 
        175-SIG-VALOR.
-           MOVE VAL-VALOR-HORA TO WS-VALOR.
+           MOVE VAL-VALOR-HORA TO WS-VALOR-HORA.
            PERFORM 100-LEER-VAL.
 
 
        180-FECHA.
            MOVE 0 TO WS-TOT-CLI-HS.
+           MOVE 0 TO WS-TOT-CLI-VAL.
            PERFORM 190-DET-MENOR-CLIE.
            PERFORM 200-IMPR-ENCAB-CLIENTE.
            PERFORM 210-CLIENTES UNTIL (HS1-EOF = "SI" AND
@@ -532,9 +523,9 @@
                               (WS-MENOR-CLIENTE NOT = HS1-CLIENTE AND
                                WS-MENOR-CLIENTE NOT = HS2-CLIENTE AND
                                WS-MENOR-CLIENTE NOT = HS3-CLIENTE).
-           PERFORM 270-IMPRIMIR-LI-LINEAS-1-A-5.
            PERFORM 280-IMPRIMIR-LN-TOTAL-CLI.
            ADD WS-TOT-CLI-HS TO WS-TOT-FECHA-HS.
+           ADD WS-TOT-CLI-VAL TO WS-TOT-FECHA-VAL.
 
        190-DET-MENOR-CLIE.
            MOVE 9999 TO WS-MENOR-CLIENTE.
@@ -603,8 +594,11 @@
 
        250-PROCESAR-CLI.
            ADD WS-LIS-HS-CANT-HORAS TO WS-TOT-CLI-HS.
-           MULTIPLY WS-LIS-HS-CANT-HORAS BY VAL-VALOR-HORA
+           MULTIPLY WS-LIS-HS-CANT-HORAS BY WS-VALOR-HORA
                     GIVING WS-VALOR.
+           DISPLAY "CANT-HORAS: " WS-LIS-HS-CANT-HORAS.
+           DISPLAY "VAL-VALOR-HORA: " VAL-VALOR-HORA.
+           DISPLAY "WS-VALOR: " WS-VALOR.
            ADD WS-VALOR TO WS-TOT-CLI-VAL.
            PERFORM 260-IMPRIMIR-LN-FILA-CLI.
 
@@ -616,9 +610,11 @@
            WRITE LIS-NOM-LINEA FROM LN-LINEA-CLI.
 
        270-IMPRIMIR-LI-LINEAS-1-A-5.
+           IF LI-NRO-LINEA > 70
+               PERFORM 130-IMPRIMIR-LI-ENCAB.
            MOVE WS-LIS-HS-CONS TO LI-LINEA1-CONS.
            WRITE LIS-IMP-LINEA FROM LI-LINEA1.
-           MOVE WS-LIS-HS-FECHA-AAAA TO LI-LINEA2-AAAA.
+           MOVE WS-LIS-HS-FECHA-AAAA TO LI-LINEA2-AA.
            MOVE WS-LIS-HS-FECHA-MM TO LI-LINEA2-MM.
            MOVE WS-LIS-HS-FECHA-DD TO LI-LINEA2-DD.
            WRITE LIS-IMP-LINEA FROM LI-LINEA2.
@@ -626,9 +622,10 @@
            WRITE LIS-IMP-LINEA FROM LI-LINEA3.
            MOVE WS-LIS-HS-CANT-HORAS TO LI-LINEA4-HORAS.
            WRITE LIS-IMP-LINEA FROM LI-LINEA4.
-           MOVE WS-VALOR TO LI-LINEA5-VALOR.
+           MOVE WS-TOT-CONS-VAL TO LI-LINEA5-VALOR.
            WRITE LIS-IMP-LINEA FROM LI-LINEA5.
            WRITE LIS-IMP-LINEA FROM LI-LINEA-BL.
+           ADD 6 TO LI-NRO-LINEA.
 
        280-IMPRIMIR-LN-TOTAL-CLI.
            MOVE WS-TOT-CLI-HS TO LN-LINEA-TOT-CLI-HS.
