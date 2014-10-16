@@ -31,10 +31,10 @@
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS CONS-ESTADO.
 
-           SELECT LIS-IMP ASSIGN TO "LISTADO_TOTALES.DAT"
+           SELECT LIS-IMP ASSIGN TO "LIS_IMP.TXT"
                ORGANIZATION IS LINE SEQUENTIAL.
 
-           SELECT LIS-NOM ASSIGN TO "LISTADO_HORAS.DAT"
+           SELECT LIS-NOM ASSIGN TO "LIS_NOM.TXT"
                ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
@@ -220,6 +220,21 @@
 
        01 LN-NRO-LINEA                 PIC 99 VALUE IS 0.
 
+       01 LN-LINEA-CLI.
+           03 LN-LINEA-CLI-COD   PIC 9(3).
+           03 FILLER              PIC X(8) VALUE ALL " ".
+           03 LN-LINEA-CLI-CANT   PIC 9(2)V99.
+           03 FILLER              PIC X(9) VALUE ALL " ".
+           03 LN-LINEA-CLI-VAL    PIC 9(4)V99.
+           03 FILLER              PIC X(8) VALUE ALL " ".
+           03 LN-LINEA-CLI-OBS    PIC X(30).
+
+       01 LN-LINEA-TOT-CLI.
+           03 FILLER                 PIC X(18) VALUE "TOTAL CLIENTE".
+           03 LN-LINEA-TOT-CLI-HS    PIC 9(2)V99.
+           03 FILLER                 PIC X(18) VALUE "TOTAL CLIENTE".
+           03 LN-LINEA-TOT-CLI-VAL   PIC 9(5)V99.
+
        01  WS-FECHA-HOY.
            03  WS-FECHA-HOY-AAAA       PIC  9(4).
            03  WS-FECHA-HOY-MM         PIC  9(2).
@@ -234,11 +249,15 @@
 
        01 WS-TOT-FECHA-HS              PIC 9(7)V99 VALUE IS ZERO.
 
-       01 WS-TOTAL-HORAS-CLI                 PIC 9(5)V99.
+       01 WS-TOT-CLI-HS                      PIC 9(2)V99.
+       01 WS-TOT-CLI-VAL                     PIC 9(5)V99.
 
        01 WS-LIS-HS.
            03 WS-LIS-HS-CONS                 PIC 9(3).
-           03 WS-LIS-HS-FECHA                PIC X(8).
+           03 WS-LIS-HS-FECHA.
+               05  WS-LIS-HS-FECHA-AAAA     PIC  9(4).
+               05  WS-LIS-HS-FECHA-MM       PIC  9(2).
+               05  WS-LIS-HS-FECHA-DD       PIC  9(2).
            03 WS-LIS-HS-CLIENTE              PIC 9(4).
            03 WS-LIS-HS-CANT-HORAS           PIC 9(2)V99.
            03 WS-LIS-HS-OBSERV               PIC X(30).
@@ -251,6 +270,9 @@
 
        01 LN-HORAS-CLI                       PIC 9(2)V99 VALUE IS ZERO.
        01 LN-VALOR-CLI                       PIC 9(5)V99 VALUE IS ZERO.
+
+       01 WS-TOT-CONS-VAL                    PIC 9(6)V99 VALUE IS ZERO.
+       01 WS-TOT-CONS-HS                     PIC 9(3)V99 VALUE IS ZERO.
 
        PROCEDURE DIVISION.
 
@@ -318,25 +340,24 @@
            END-PERFORM.
 
        050-FIN.
-           DISPLAY "050-FIN".
            CLOSE HS1, HS2, HS3.
            CLOSE VAL.
            CLOSE CONS.
            CLOSE LIS-IMP, LIS-NOM.
 
        060-PROCESAR.
-           DISPLAY "060-PROCESAR".
            PERFORM 070-LEER-HS1.
            PERFORM 080-LEER-HS2.
            PERFORM 090-LEER-HS3.
            PERFORM 100-LEER-VAL.
+           MOVE 0 TO WS-TOT-GRAL-VAL.
+           MOVE 0 TO WS-TOT-GRAL-HS.
            PERFORM 110-SUB-PROCESAR1 UNTIL HS1-EOF = "SI" AND
                                            HS2-EOF = "SI" AND
                                            HS3-EOF = "SI".
       *    PERFORM XXX-IMPRIMIR-TOTAL-GRAL.
 
        070-LEER-HS1.
-           DISPLAY "070-LEER-HS1".
            READ HS1 AT END MOVE "SI" TO HS1-EOF
            IF HS1-ESTADO NOT = ZERO AND 10
                DISPLAY "ERROR: No se pudo leer el archivo HS1.DAT"
@@ -344,7 +365,6 @@
            END-IF.
 
        080-LEER-HS2.
-           DISPLAY "080-LEER-HS2".
            READ HS2 AT END MOVE "SI" TO HS2-EOF
            IF HS2-ESTADO NOT = ZERO AND 10
                DISPLAY "ERROR: No se pudo leer el archivo HS2.DAT"
@@ -352,7 +372,6 @@
            END-IF.
 
        090-LEER-HS3.
-           DISPLAY "090-LEER-HS3".
            READ HS3 AT END MOVE "SI" TO HS3-EOF
            IF HS3-ESTADO NOT = ZERO AND 10
                DISPLAY "ERROR: No se pudo leer el archivo HS3.DAT"
@@ -360,7 +379,6 @@
            END-IF.
 
        100-LEER-VAL.
-           DISPLAY "100-LEER-VAL".
            READ VAL
                AT END MOVE 'SI' TO VAL-EOF.
            IF VAL-ESTADO NOT = ZERO AND 10
@@ -368,15 +386,16 @@
                DISPLAY "ERROR:   FILE-STATUS: " VAL-ESTADO.
 
        110-SUB-PROCESAR1.
-           DISPLAY "110-SUB-PROCESAR1".
            PERFORM 120-DET-MENOR-CONS.
            SEARCH ALL WS-T-CONS-CAMPO
                AT END DISPLAY "ERROR: CONS NO ENCONTRADO EN WS-T-CONS"
                WHEN WS-T-CONS-CONS(WS-T-CONS-I) = WS-MENOR-CONS
                DISPLAY " * NOMBRE: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
+           MOVE 0 TO WS-TOT-CONS-VAL.
+           MOVE 0 TO WS-TOT-CONS-HS.
            PERFORM 140-IMPRIM-ENCAB-LIS-NOM.
            PERFORM 130-IMPRIM-ENCAB-LIS-IMP.
-           PERFORM 145-IMPRIM-ENCAB-CLI-LIS-NOM.
+      *     PERFORM 145-IMPRIM-ENCAB-CLI-LIS-NOM.
            PERFORM 150-CONS UNTIL (HS1-EOF = "SI" AND
                                    HS2-EOF = "SI" AND
                                    HS3-EOF = "SI") OR
@@ -385,17 +404,14 @@
                                    WS-MENOR-CONS NOT = HS3-CONS).
 
        120-DET-MENOR-CONS.
-           DISPLAY "120-DET-MENOR-CONS".
            MOVE 999 TO WS-MENOR-CONS.
            MOVE HS1-CONS TO WS-MENOR-CONS.
            IF WS-MENOR-CONS > HS2-CONS
                MOVE HS2-CONS TO WS-MENOR-CONS.
            IF WS-MENOR-CONS > HS3-CONS
                MOVE HS3-CONS TO WS-MENOR-CONS.
-           DISPLAY " * MENOR-CONS: " WS-MENOR-CONS.
 
        130-IMPRIM-ENCAB-LIS-IMP.
-           DISPLAY "130-IMPRIM-ENCAB-LIS-IMP".
            MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
            ADD 1 TO LI-HOJA.
            MOVE WS-FECHA-HOY-AAAA TO LI-ENC-FECHA-AAAA.
@@ -408,7 +424,6 @@
            MOVE 5 TO LI-NRO-LINEA.
 
        140-IMPRIM-ENCAB-LIS-NOM.
-           DISPLAY "140-IMPRIM-ENCAB-LIS-NOM".
            MOVE FUNCTION CURRENT-DATE (1:8) TO WS-FECHA-HOY.
            ADD 1 TO LN-HOJA.
            MOVE WS-FECHA-HOY-AAAA TO LN-ENC-FECHA-AAAA.
@@ -421,16 +436,15 @@
            MOVE 5 TO LN-NRO-LINEA.
 
        145-IMPRIM-ENCAB-CLI-LIS-NOM.
-           DISPLAY "145-IMPRIM-ENCAB-CLI-LIS-NOM".
            MOVE WS-T-CONS-CONS(WS-T-CONS-I) TO LN-LINEA1-CONS.
            MOVE WS-T-CONS-NOMBRE(WS-T-CONS-I) TO LN-LINEA1-NOMB.
            WRITE LIS-NOM-LINEA FROM LN-LINEA1.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
 
        150-CONS.
-           DISPLAY "150-CONS".
            PERFORM 160-DET-MENOR-FECHA.
            PERFORM 170-VALOR-FECHA.
+           MOVE 0 TO WS-TOT-FECHA-HS.
            DISPLAY " * VALOR-FECHA: " WS-VALOR.
            MOVE WS-MENOR-CONS TO LI-LINEA1-CONS.
            WRITE LIS-IMP-LINEA FROM LI-LINEA1.
@@ -443,7 +457,6 @@
            MOVE WS-MENOR-FECHA-DD TO LN-LINEA2-DD.
            WRITE LIS-IMP-LINEA FROM LN-LINEA2.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
-           PERFORM 200-IMPR-ENCAB-CLIENTE.
            PERFORM 180-FECHA UNTIL (HS1-EOF = "SI" AND
                                     HS2-EOF = "SI" AND
                                     HS3-EOF = "SI") OR
@@ -455,7 +468,6 @@
                                     WS-MENOR-CONS NOT = HS3-CONS).
 
        160-DET-MENOR-FECHA.
-           DISPLAY "160-DET-MENOR-FECHA".
            MOVE "99999999" TO WS-MENOR-FECHA .
            IF WS-MENOR-CONS = HS1-CONS
                MOVE HS1-FECHA TO WS-MENOR-FECHA
@@ -468,24 +480,21 @@
                AND WS-MENOR-CONS = HS3-CONS
                MOVE HS3-FECHA TO WS-MENOR-FECHA
            END-IF.
-           DISPLAY " * MENOR-FECHA: " WS-MENOR-FECHA.
 
        170-VALOR-FECHA.
-           DISPLAY "170-VALOR-FECHA".
            PERFORM 175-SIG-VALOR UNTIL VAL-EOF = "SI" OR
                                        WS-MENOR-CONS NOT = VAL-CONS OR
                                        WS-MENOR-FECHA > VAL-FEC-HASTA.
 
        175-SIG-VALOR.
-           DISPLAY "175-SIG-VALOR".
            MOVE VAL-VALOR-HORA TO WS-VALOR.
            PERFORM 100-LEER-VAL.
 
 
        180-FECHA.
-           DISPLAY "180-FECHA".
-           MOVE 0 TO WS-TOTAL-HORAS-CLI.
+           MOVE 0 TO WS-TOT-CLI-HS.
            PERFORM 190-DET-MENOR-CLIE.
+           PERFORM 200-IMPR-ENCAB-CLIENTE.
            PERFORM 210-CLIENTES UNTIL (HS1-EOF = "SI" AND
                                        HS2-EOF = "SI" AND
                                        HS3-EOF = "SI") OR
@@ -498,9 +507,11 @@
                               (WS-MENOR-CLIENTE NOT = HS1-CLIENTE AND
                                WS-MENOR-CLIENTE NOT = HS2-CLIENTE AND
                                WS-MENOR-CLIENTE NOT = HS3-CLIENTE).
+           PERFORM 270-IMPRIMIR-LI-LINEAS-1-A-5.
+           PERFORM 280-IMPRIMIR-LN-TOTAL-CLI.
+           ADD WS-TOT-CLI-HS TO WS-TOT-FECHA-HS.
 
        190-DET-MENOR-CLIE.
-           DISPLAY "190-DET-MENOR-CLIE".
            MOVE 9999 TO WS-MENOR-CLIENTE.
            IF WS-MENOR-CONS = HS1-CONS AND WS-MENOR-FECHA = HS1-FECHA
                MOVE HS1-CLIENTE TO WS-MENOR-CLIENTE
@@ -518,7 +529,6 @@
            DISPLAY " * MENOR_CLIE: " WS-MENOR-CLIENTE.
 
        200-IMPR-ENCAB-CLIENTE.
-           DISPLAY "200-IMPR-ENCAB-CLIENTE".
            WRITE LIS-NOM-LINEA FROM LN-ENC1.
            WRITE LIS-NOM-LINEA FROM LN-ENC2.
 
@@ -537,7 +547,6 @@
                                    WS-MENOR-CONS NOT = HS3-CONS.
 
        220-HS1-CLIENTE.
-           DISPLAY "220-HS1-CLIENTE".
            MOVE REG-HS1 TO WS-LIS-HS.
            PERFORM 250-PROCESAR-CLI.
            PERFORM 070-LEER-HS1.
@@ -548,7 +557,6 @@
            END-IF.
 
        230-HS2-CLIENTE.
-           DISPLAY "230-HS2-CLIENTE".
            MOVE REG-HS2 TO WS-LIS-HS.
            PERFORM 250-PROCESAR-CLI.
            PERFORM 080-LEER-HS2.
@@ -559,7 +567,6 @@
            END-IF.
 
        240-HS3-CLIENTE.
-           DISPLAY "240-HS3-CLIENTE".
            MOVE REG-HS3 TO WS-LIS-HS.
            PERFORM 250-PROCESAR-CLI.
            PERFORM 090-LEER-HS3.
@@ -570,10 +577,37 @@
            END-IF.
 
        250-PROCESAR-CLI.
-           DISPLAY "250-PROCESAR-CLI".
-           ADD WS-LIS-HS-CANT-HORAS TO LN-HORAS-CLI.
+           ADD WS-LIS-HS-CANT-HORAS TO WS-TOT-CLI-HS.
            MULTIPLY WS-LIS-HS-CANT-HORAS BY VAL-VALOR-HORA
                     GIVING WS-VALOR.
-           ADD WS-VALOR TO LN-VALOR-CLI.
+           ADD WS-VALOR TO WS-TOT-CLI-VAL.
+           PERFORM 260-IMPRIMIR-LN-FILA-CLI.
+
+       260-IMPRIMIR-LN-FILA-CLI.
+           MOVE WS-LIS-HS-CLIENTE TO LN-LINEA-CLI-COD.
+           MOVE WS-LIS-HS-CANT-HORAS TO LN-LINEA-CLI-CANT.
+           MOVE WS-VALOR TO LN-LINEA-CLI-VAL.
+           MOVE WS-LIS-HS-OBSERV TO LN-LINEA-CLI-OBS.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-CLI.
+
+       270-IMPRIMIR-LI-LINEAS-1-A-5.
+           MOVE WS-LIS-HS-CONS TO LI-LINEA1-CONS.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA1.
+           MOVE WS-LIS-HS-FECHA-AAAA TO LI-LINEA2-AAAA.
+           MOVE WS-LIS-HS-FECHA-MM TO LI-LINEA2-MM.
+           MOVE WS-LIS-HS-FECHA-DD TO LI-LINEA2-DD.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA2.
+           MOVE WS-LIS-HS-CLIENTE TO LI-LINEA3-CLI.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA3.
+           MOVE WS-LIS-HS-CANT-HORAS TO LI-LINEA4-HORAS.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA4.
+           MOVE WS-VALOR TO LI-LINEA5-VALOR.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA5.
+           WRITE LIS-IMP-LINEA FROM LI-LINEA-BL.
+
+       280-IMPRIMIR-LN-TOTAL-CLI.
+           MOVE WS-TOT-CLI-HS TO LN-LINEA-TOT-CLI-HS.
+           MOVE WS-TOT-CLI-VAL TO LN-LINEA-TOT-CLI-VAL.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CLI.
 
        END PROGRAM TP-1.
