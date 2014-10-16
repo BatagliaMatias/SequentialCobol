@@ -232,8 +232,26 @@
        01 LN-LINEA-TOT-CLI.
            03 FILLER                 PIC X(18) VALUE "TOTAL CLIENTE".
            03 LN-LINEA-TOT-CLI-HS    PIC 9(2)V99.
-           03 FILLER                 PIC X(18) VALUE "TOTAL CLIENTE".
+           03 FILLER                 PIC X(5) VALUE ALL " ".
            03 LN-LINEA-TOT-CLI-VAL   PIC 9(5)V99.
+
+       01 LN-LINEA-TOT-FECHA.
+           03 FILLER                    PIC X(18) VALUE "TOTAL FECHA".
+           03 LN-LINEA-TOT-FECHA-HS     PIC 9(2)V99.
+           03 FILLER                    PIC X(5) VALUE ALL " ".
+           03 LN-LINEA-TOT-FECHA-VAL      PIC 9(5)V99.
+
+       01 LN-LINEA-TOT-CONS.
+           03 FILLER                  PIC X(21) VALUE "TOTAL CONSULTOR".
+           03 LN-LINEA-TOT-CONS-HS    PIC 9(3)V99.
+           03 FILLER                  PIC X(5) VALUE ALL " ".
+           03 LN-LINEA-TOT-CONS-VAL   PIC 9(6)V99.
+
+       01 LN-LINEA-TOT-GRAL.
+           03 FILLER                  PIC X(19) VALUE "TOTAL GENERAL".
+           03 LN-LINEA-TOT-GRAL-HS    PIC 9(4)V99.
+           03 FILLER                  PIC X(5) VALUE ALL " ".
+           03 LN-LINEA-TOT-GRAL-VAL   PIC 9(7)V99.
 
        01  WS-FECHA-HOY.
            03  WS-FECHA-HOY-AAAA       PIC  9(4).
@@ -247,10 +265,11 @@
 
        01 WS-MENOR-CLIENTE             PIC 9(4).
 
-       01 WS-TOT-FECHA-HS              PIC 9(7)V99 VALUE IS ZERO.
+       01 WS-TOT-FECHA-HS              PIC 9(2)V99 VALUE IS ZERO.
+       01 WS-TOT-FECHA-VAL             PIC 9(5)V99 VALUE IS ZERO.
 
-       01 WS-TOT-CLI-HS                      PIC 9(2)V99.
-       01 WS-TOT-CLI-VAL                     PIC 9(5)V99.
+       01 WS-TOT-CLI-HS                PIC 9(2)V99.
+       01 WS-TOT-CLI-VAL               PIC 9(5)V99.
 
        01 WS-LIS-HS.
            03 WS-LIS-HS-CONS                 PIC 9(3).
@@ -355,7 +374,7 @@
            PERFORM 110-SUB-PROCESAR1 UNTIL HS1-EOF = "SI" AND
                                            HS2-EOF = "SI" AND
                                            HS3-EOF = "SI".
-      *    PERFORM XXX-IMPRIMIR-TOTAL-GRAL.
+           PERFORM 310-IMPRIMIR-LN-TOTAL-GRAL.
 
        070-LEER-HS1.
            READ HS1 AT END MOVE "SI" TO HS1-EOF
@@ -402,6 +421,9 @@
                                   (WS-MENOR-CONS NOT = HS1-CONS AND
                                    WS-MENOR-CONS NOT = HS2-CONS AND
                                    WS-MENOR-CONS NOT = HS3-CONS).
+           PERFORM 300-IMPRIMIR-LN-TOTAL-CONS.
+           ADD WS-TOT-CONS-VAL TO WS-TOT-GRAL-VAL.
+           ADD WS-TOT-CONS-HS TO WS-TOT-GRAL-HS.
 
        120-DET-MENOR-CONS.
            MOVE 999 TO WS-MENOR-CONS.
@@ -466,6 +488,9 @@
                                    (WS-MENOR-CONS NOT = HS1-CONS AND
                                     WS-MENOR-CONS NOT = HS2-CONS AND
                                     WS-MENOR-CONS NOT = HS3-CONS).
+           PERFORM 290-IMPRIMIR-LN-TOTAL-FECHA.
+           ADD WS-TOT-FECHA-VAL TO WS-TOT-CONS-VAL.
+           ADD WS-TOT-FECHA-HS TO WS-TOT-CONS-HS.
 
        160-DET-MENOR-FECHA.
            MOVE "99999999" TO WS-MENOR-FECHA .
@@ -609,5 +634,20 @@
            MOVE WS-TOT-CLI-HS TO LN-LINEA-TOT-CLI-HS.
            MOVE WS-TOT-CLI-VAL TO LN-LINEA-TOT-CLI-VAL.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CLI.
+
+       290-IMPRIMIR-LN-TOTAL-FECHA.
+           MOVE WS-TOT-FECHA-HS TO LN-LINEA-TOT-FECHA-HS.
+           MOVE WS-TOT-FECHA-VAL TO LN-LINEA-TOT-FECHA-VAL.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CLI.
+
+       300-IMPRIMIR-LN-TOTAL-CONS.
+           MOVE WS-TOT-CONS-HS TO LN-LINEA-TOT-CONS-HS.
+           MOVE WS-TOT-CONS-VAL TO LN-LINEA-TOT-CONS-VAL.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CONS.
+
+       310-IMPRIMIR-LN-TOTAL-GRAL.
+           MOVE WS-TOT-GRAL-HS TO LN-LINEA-TOT-GRAL-HS.
+           MOVE WS-TOT-GRAL-VAL TO LN-LINEA-TOT-GRAL-VAL.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-GRAL.
 
        END PROGRAM TP-1.
