@@ -184,73 +184,86 @@
            03 LN-ENC-FECHA-MM          PIC 99.
            03 FILLER                   PIC X VALUE "/".
            03 LN-ENC-FECHA-DD          PIC 99.
-           03 FILLER                   PIC X(37) VALUE ALL " ".
+           03 FILLER                   PIC X(51) VALUE ALL " ".
            03 FILLER                   PIC X(9) VALUE "Hoja nro ".
            03 LN-HOJA                  PIC 99 VALUE IS 0.
 
        01 LN-ENC2.
-           03 FILLER PIC X(7) VALUE ALL " ".
-           03 FILLER PIC X(73) VALUE "TIMES - LISTADO HORAS TRABAJADAS".
+           03 FILLER PIC X(24) VALUE ALL " ".
+           03 FILLER PIC X(32) VALUE "TIMES - LISTADO HORAS TRABAJADAS".
 
-       01 LN-LINEA1.
+       01 LN-ENC-CLI.
            03 FILLER              PIC X(16) VALUE IS "COD. CONSULTOR: ".
-           03 LN-LINEA1-CONS      PIC X(3).
+           03 LN-ENC-CLI-CONS     PIC ZZ9.
            03 FILLER              PIC X(10) VALUE IS "  NOMBRE: ".
-           03 LN-LINEA1-NOMB      PIC X(25).
+           03 LN-ENC-CLI-NOMB     PIC X(25).
 
-       01 LN-LINEA2.
-           03 FILLER              PIC X(7) VALUE IS "FECHA: ".
-           03 LN-LINEA2-AAAA      PIC 9999.
-           03 FILLER              PIC X VALUE "/".
-           03 LN-LINEA2-MM        PIC 99.
-           03 FILLER              PIC X VALUE "/".
-           03 LN-LINEA2-DD        PIC 99.
+       01 LN-ENC-CLI-FECHA.
+           03 FILLER                     PIC X(7) VALUE IS "FECHA: ".
+           03 LN-ENC-CLI-FECHA-AAAA      PIC 9999.
+           03 FILLER                     PIC X VALUE "/".
+           03 LN-ENC-CLI-FECHA-MM        PIC 99.
+           03 FILLER                     PIC X VALUE "/".
+           03 LN-ENC-CLI-FECHA-DD        PIC 99.
 
-       01 LN-ENC-CLI1.
-           03 FILLER              PIC X(11) VALUE "Cod Cliente".
-           03 FILLER              PIC X(14) VALUE "Cantidad horas".
-           03 FILLER              PIC X(15) VALUE "Valor          ".
-           03 FILLER              PIC X(12) VALUE "Obervaciones".
-           03 FILLER              PIC X(18) VALUE ALL " ".
+       01 LN-ENC-TABLA-CLI.
+           03 FILLER              PIC X(13) VALUE " Cod Cliente ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC X(16) VALUE " Cantidad horas ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC X(11) VALUE "   Valor   ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC X(13) VALUE " Obervaciones".
 
-       01 LN-ENC-CLI2             PIC X(80) VALUE ALL "-".
+       01 LN-LINEA-PUNT             PIC X(80) VALUE ALL "-".
 
        01 LN-LINEA-BL             PIC X(80) VALUE ALL " ".
 
        01 LN-NRO-LINEA                 PIC 99 VALUE IS 0.
 
        01 LN-LINEA-CLI.
-           03 LN-LINEA-CLI-COD   PIC 9(3).
-           03 FILLER              PIC X(8) VALUE ALL " ".
-           03 LN-LINEA-CLI-CANT   PIC 9(2)V99.
            03 FILLER              PIC X(9) VALUE ALL " ".
-           03 LN-LINEA-CLI-VAL    PIC 9(4)V99.
-           03 FILLER              PIC X(8) VALUE ALL " ".
+           03 LN-LINEA-CLI-COD    PIC ZZ9.
+           03 FILLER              PIC X VALUE " ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC X(10) VALUE ALL " ".
+           03 LN-LINEA-CLI-CANT   PIC Z9,99.
+           03 FILLER              PIC X VALUE " ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC XX VALUE "  ".
+           03 LN-LINEA-CLI-VAL    PIC Z.ZZ9,99.
+           03 FILLER              PIC X VALUE " ".
+           03 FILLER              PIC X VALUE "|".
+           03 FILLER              PIC X VALUE " ".
            03 LN-LINEA-CLI-OBS    PIC X(30).
 
        01 LN-LINEA-TOT-CLI.
-           03 FILLER                 PIC X(18) VALUE "TOTAL CLIENTE".
-           03 LN-LINEA-TOT-CLI-HS    PIC 9(2)V99.
-           03 FILLER                 PIC X(5) VALUE ALL " ".
-           03 LN-LINEA-TOT-CLI-VAL   PIC 9(5)V99.
+           03 FILLER                 PIC X(13) VALUE "TOTAL CLIENTE".
+           03 FILLER                 PIC X(11) VALUE ALL " ".
+           03 LN-LINEA-TOT-CLI-HS    PIC Z9,99.
+           03 FILLER                 PIC X(3) VALUE ALL " ".
+           03 LN-LINEA-TOT-CLI-VAL   PIC ZZ.ZZ9,99.
 
        01 LN-LINEA-TOT-FECHA.
-           03 FILLER                    PIC X(18) VALUE "TOTAL FECHA".
-           03 LN-LINEA-TOT-FECHA-HS     PIC 9(2)V99.
-           03 FILLER                    PIC X(5) VALUE ALL " ".
-           03 LN-LINEA-TOT-FECHA-VAL      PIC 9(5)V99.
+           03 FILLER                    PIC X(11) VALUE "TOTAL FECHA".
+           03 FILLER                    PIC X(13) VALUE ALL " ".
+           03 LN-LINEA-TOT-FECHA-HS     PIC Z9,99.
+           03 FILLER                    PIC X(3) VALUE ALL " ".
+           03 LN-LINEA-TOT-FECHA-VAL    PIC ZZ.ZZ9,99.
 
        01 LN-LINEA-TOT-CONS.
-           03 FILLER                  PIC X(21) VALUE "TOTAL CONSULTOR".
-           03 LN-LINEA-TOT-CONS-HS    PIC 9(3)V99.
-           03 FILLER                  PIC X(5) VALUE ALL " ".
-           03 LN-LINEA-TOT-CONS-VAL   PIC 9(6)V99.
+           03 FILLER                  PIC X(15) VALUE "TOTAL CONSULTOR".
+           03 FILLER                  PIC X(8) VALUE ALL " ".
+           03 LN-LINEA-TOT-CONS-HS    PIC ZZ9,99.
+           03 FILLER                  PIC X(2) VALUE ALL " ".
+           03 LN-LINEA-TOT-CONS-VAL   PIC ZZZ.ZZ9,99.
 
        01 LN-LINEA-TOT-GRAL.
-           03 FILLER                  PIC X(19) VALUE "TOTAL GENERAL".
-           03 LN-LINEA-TOT-GRAL-HS    PIC 9(4)V99.
-           03 FILLER                  PIC X(5) VALUE ALL " ".
-           03 LN-LINEA-TOT-GRAL-VAL   PIC 9(7)V99.
+           03 FILLER                  PIC X(13) VALUE "TOTAL GENERAL".
+           03 FILLER                  PIC X(9) VALUE ALL " ".
+           03 LN-LINEA-TOT-GRAL-HS    PIC ZZZ9,99.
+           03 FILLER                  PIC X(1) VALUE ALL " ".
+           03 LN-LINEA-TOT-GRAL-VAL   PIC ZZZZ.ZZ9,99.
 
        01  WS-FECHA-HOY.
            03  WS-FECHA-HOY-AAAA       PIC  9(4).
@@ -414,6 +427,7 @@
                DISPLAY " * NOMBRE: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
            MOVE 0 TO WS-TOT-CONS-VAL.
            MOVE 0 TO WS-TOT-CONS-HS.
+           PERFORM 145-IMPRIMIR-LN-ENC-CLI.
            PERFORM 150-CONS UNTIL (HS1-EOF = "SI" AND
                                    HS2-EOF = "SI" AND
                                    HS3-EOF = "SI") OR
@@ -454,14 +468,16 @@
            WRITE LIS-NOM-LINEA FROM LN-ENC1.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
            WRITE LIS-NOM-LINEA FROM LN-ENC2.
-           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
-           MOVE 5 TO LN-NRO-LINEA.
+           MOVE 4 TO LN-NRO-LINEA.
 
-       145-IMPRIM-ENCAB-CLI-LIS-NOM.
-           MOVE WS-T-CONS-CONS(WS-T-CONS-I) TO LN-LINEA1-CONS.
-           MOVE WS-T-CONS-NOMBRE(WS-T-CONS-I) TO LN-LINEA1-NOMB.
-           WRITE LIS-NOM-LINEA FROM LN-LINEA1.
+       145-IMPRIMIR-LN-ENC-CLI.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
+           MOVE WS-T-CONS-CONS(WS-T-CONS-I) TO LN-ENC-CLI-CONS.
+           MOVE WS-T-CONS-NOMBRE(WS-T-CONS-I) TO LN-ENC-CLI-NOMB.
+           WRITE LIS-NOM-LINEA FROM LN-ENC-CLI.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
+           ADD 3 TO LN-NRO-LINEA.
 
        150-CONS.
            PERFORM 160-DET-MENOR-FECHA.
@@ -469,6 +485,7 @@
            MOVE 0 TO WS-TOT-FECHA-HS.
            MOVE 0 TO WS-TOT-FECHA-VAL.
            DISPLAY " * VALOR-HORA-FECHA: " WS-VALOR-HORA.
+           PERFORM 320-IMPRIMIR-LN-ENC-CLI-FECHA.
            PERFORM 180-FECHA UNTIL (HS1-EOF = "SI" AND
                                     HS2-EOF = "SI" AND
                                     HS3-EOF = "SI") OR
@@ -478,9 +495,9 @@
                                    (WS-MENOR-CONS NOT = HS1-CONS AND
                                     WS-MENOR-CONS NOT = HS2-CONS AND
                                     WS-MENOR-CONS NOT = HS3-CONS).
+           PERFORM 290-IMPRIMIR-LN-TOTAL-FECHA.
            ADD WS-TOT-FECHA-VAL TO WS-TOT-CONS-VAL.
            ADD WS-TOT-FECHA-HS TO WS-TOT-CONS-HS.
-           PERFORM 290-IMPRIMIR-LN-TOTAL-FECHA.
 
        160-DET-MENOR-FECHA.
            MOVE "99999999" TO WS-MENOR-FECHA .
@@ -510,7 +527,7 @@
            MOVE 0 TO WS-TOT-CLI-HS.
            MOVE 0 TO WS-TOT-CLI-VAL.
            PERFORM 190-DET-MENOR-CLIE.
-           PERFORM 200-IMPR-ENCAB-CLIENTE.
+           PERFORM 330-IMPRIMIR-LN-ENC-TABLA-CLI.
            PERFORM 210-CLIENTES UNTIL (HS1-EOF = "SI" AND
                                        HS2-EOF = "SI" AND
                                        HS3-EOF = "SI") OR
@@ -543,10 +560,6 @@
                MOVE HS3-CLIENTE TO WS-MENOR-CLIENTE
            END-IF.
            DISPLAY " * MENOR_CLIE: " WS-MENOR-CLIENTE.
-
-       200-IMPR-ENCAB-CLIENTE.
-           WRITE LIS-NOM-LINEA FROM LN-ENC1.
-           WRITE LIS-NOM-LINEA FROM LN-ENC2.
 
        210-CLIENTES.
            PERFORM 220-HS1-CLIENTE UNTIL HS1-EOF = "SI" OR
@@ -603,14 +616,16 @@
            PERFORM 260-IMPRIMIR-LN-FILA-CLI.
 
        260-IMPRIMIR-LN-FILA-CLI.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
            MOVE WS-LIS-HS-CLIENTE TO LN-LINEA-CLI-COD.
            MOVE WS-LIS-HS-CANT-HORAS TO LN-LINEA-CLI-CANT.
            MOVE WS-VALOR TO LN-LINEA-CLI-VAL.
            MOVE WS-LIS-HS-OBSERV TO LN-LINEA-CLI-OBS.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-CLI.
+           ADD 1 TO LN-NRO-LINEA.
 
        270-IMPRIMIR-LI-LINEAS-1-A-5.
-           IF LI-NRO-LINEA > 70
+           IF LI-NRO-LINEA > 60
                PERFORM 130-IMPRIMIR-LI-ENCAB.
            MOVE WS-LIS-HS-CONS TO LI-LINEA1-CONS.
            WRITE LIS-IMP-LINEA FROM LI-LINEA1.
@@ -628,23 +643,53 @@
            ADD 6 TO LI-NRO-LINEA.
 
        280-IMPRIMIR-LN-TOTAL-CLI.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
            MOVE WS-TOT-CLI-HS TO LN-LINEA-TOT-CLI-HS.
            MOVE WS-TOT-CLI-VAL TO LN-LINEA-TOT-CLI-VAL.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CLI.
+           ADD 1 TO LN-NRO-LINEA.
 
        290-IMPRIMIR-LN-TOTAL-FECHA.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
            MOVE WS-TOT-FECHA-HS TO LN-LINEA-TOT-FECHA-HS.
            MOVE WS-TOT-FECHA-VAL TO LN-LINEA-TOT-FECHA-VAL.
-           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CLI.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-FECHA.
+           ADD 2 TO LN-NRO-LINEA.
 
        300-IMPRIMIR-LN-TOTAL-CONS.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
            MOVE WS-TOT-CONS-HS TO LN-LINEA-TOT-CONS-HS.
            MOVE WS-TOT-CONS-VAL TO LN-LINEA-TOT-CONS-VAL.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-CONS.
+           ADD 2 TO LN-NRO-LINEA.
 
        310-IMPRIMIR-LN-TOTAL-GRAL.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
            MOVE WS-TOT-GRAL-HS TO LN-LINEA-TOT-GRAL-HS.
            MOVE WS-TOT-GRAL-VAL TO LN-LINEA-TOT-GRAL-VAL.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-TOT-GRAL.
+           ADD 2 TO LN-NRO-LINEA.
+
+       320-IMPRIMIR-LN-ENC-CLI-FECHA.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
+           MOVE WS-MENOR-FECHA-AAAA TO LN-ENC-CLI-FECHA-AAAA.
+           MOVE WS-MENOR-FECHA-MM TO LN-ENC-CLI-FECHA-MM.
+           MOVE WS-MENOR-FECHA-DD TO LN-ENC-CLI-FECHA-DD.
+           WRITE LIS-NOM-LINEA FROM LN-ENC-CLI-FECHA.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
+           ADD 2 TO LN-NRO-LINEA.
+
+       330-IMPRIMIR-LN-ENC-TABLA-CLI.
+           PERFORM 340-LN-SALTO-DE-PAGINA.
+           WRITE LIS-NOM-LINEA FROM LN-ENC-TABLA-CLI.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-PUNT.
+           ADD 2 TO LN-NRO-LINEA.
+
+       340-LN-SALTO-DE-PAGINA.
+           IF LN-NRO-LINEA > 60
+               PERFORM 140-IMPRIMIR-LN-ENCAB.
 
        END PROGRAM TP-1.
