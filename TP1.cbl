@@ -119,6 +119,20 @@
                05 WS-T-CONS-FECHA-ALTA PIC X(8).
                05 WS-T-CONS-NOMBRE     PIC X(25).
 
+       01 WS-T-STATS.
+           03 WS-T-STATS-FILAS OCCURS 1000 TIMES.
+               05 WS-T-STATS-MESES OCCURS 13 TIMES.
+                   07 WS-T-STATS-HORAS  PIC 999V99 VALUE IS 0.
+
+       01 WS-T-STATS-TOTALES-MES.
+           03 WS-T-STATS-TOTAL OCCURS 13 TIMES PIC 999V99 VALUE IS 0.
+
+       01 WS-VALOR-HORA-DISPLAY         PIC ZZZ9.
+
+       01 WS-ACUM                       PIC 999V99 VALUE IS 0.
+
+       01 WS-MES                       PIC 99 VALUE IS 1.
+
        01 WS-T-CONS-CAMPO-TEMP.
            03 FILLER                   PIC 9(3).
            03 FILLER                   PIC X(8).
@@ -314,6 +328,7 @@
             PERFORM 030-CARGAR-T-CONS UNTIL CONS-EOF = 'SI'.
             PERFORM 040-ORDENAR-T-CONS.
             PERFORM 060-PROCESAR.
+            PERFORM 360-IMPRIMIR-STAT.
             PERFORM 050-FIN.
             STOP RUN.
 
@@ -608,6 +623,7 @@
            MULTIPLY WS-LIS-HS-CANT-HORAS BY WS-VALOR-HORA
                     GIVING WS-VALOR.
            ADD WS-VALOR TO WS-TOT-CLI-VAL.
+           PERFORM 350-ACTUALIZAR-STAT.
            PERFORM 260-IMPRIMIR-LN-FILA-CLI.
 
        260-IMPRIMIR-LN-FILA-CLI.
@@ -686,5 +702,84 @@
        340-LN-SALTO-DE-PAGINA.
            IF LN-NRO-LINEA > 60
                PERFORM 140-IMPRIMIR-LN-ENCAB.
+
+       350-ACTUALIZAR-STAT.
+           ADD WS-VALOR
+               TO WS-T-STATS-HORAS (WS-MENOR-CONS, WS-MENOR-FECHA-MM).
+
+       360-IMPRIMIR-STAT.
+           MOVE 1 TO WS-I.
+           MOVE 1 TO WS-MES.
+           PERFORM 370-STAT-SUMAR-FILAS UNTIL WS-I > 999.
+           DISPLAY "ESTADISTICA DE HORAS TRABAJADAS POR MES Y POR CONSUL
+      -            "TORA EN EL ANIO".
+           DISPLAY " ".
+           DISPLAY "                          " WITH NO ADVANCING.
+           DISPLAY "ENE " WITH NO ADVANCING.
+           DISPLAY "FEB " WITH NO ADVANCING.
+           DISPLAY "MAR " WITH NO ADVANCING.
+           DISPLAY "ABR " WITH NO ADVANCING.
+           DISPLAY "MAY " WITH NO ADVANCING.
+           DISPLAY "JUN " WITH NO ADVANCING.
+           DISPLAY "JUL " WITH NO ADVANCING.
+           DISPLAY "AGO " WITH NO ADVANCING.
+           DISPLAY "SEP " WITH NO ADVANCING.
+           DISPLAY "OCT " WITH NO ADVANCING.
+           DISPLAY "NOV " WITH NO ADVANCING.
+           DISPLAY "DIC " WITH NO ADVANCING.
+           DISPLAY "TOT ".
+           MOVE 1 TO WS-MES.
+           MOVE 1 TO WS-I.
+           PERFORM 390-STAT-MOSTRAR-HORAS UNTIL WS-I > 999.
+           PERFORM 410-STAT-MOSTRAR-TOTALES.
+
+       370-STAT-SUMAR-FILAS.
+           MOVE 1 TO WS-MES.
+           MOVE 0 TO WS-ACUM.
+           PERFORM 380-STAT-SUMAR-MES UNTIL WS-MES > 12.
+           ADD WS-ACUM TO WS-T-STATS-HORAS (WS-I, 13).
+           ADD WS-ACUM TO WS-T-STATS-TOTAL (13).
+           ADD 1 TO WS-I.
+
+       380-STAT-SUMAR-MES.
+           ADD WS-T-STATS-HORAS(WS-I, WS-MES) TO WS-ACUM.
+           ADD WS-T-STATS-HORAS(WS-I, WS-MES)
+               TO WS-T-STATS-TOTAL (WS-MES).
+           ADD 1 TO WS-MES.
+
+       390-STAT-MOSTRAR-HORAS.
+           IF WS-T-STATS-HORAS (WS-I, 13) NOT = 0
+               MOVE 1 TO WS-MES
+               SEARCH ALL WS-T-CONS-CAMPO
+                   WHEN WS-T-CONS-CONS (WS-T-CONS-I) = WS-I
+               DISPLAY WS-T-CONS-NOMBRE(WS-T-CONS-I)
+                   WITH NO ADVANCING
+               PERFORM 400-STAT-MOSTRAR-MES UNTIL WS-MES > 13
+           END-IF.
+           ADD 1 TO WS-I.
+
+       400-STAT-MOSTRAR-MES.
+           MOVE WS-T-STATS-HORAS (WS-I, WS-MES)
+               TO WS-VALOR-HORA-DISPLAY.
+           IF (WS-MES NOT = 13)
+               DISPLAY WS-VALOR-HORA-DISPLAY WITH NO ADVANCING
+           ELSE
+               DISPLAY WS-VALOR-HORA-DISPLAY.
+           ADD 1 TO WS-MES.
+
+       410-STAT-MOSTRAR-TOTALES.
+           DISPLAY "                   TOTAL " WITH NO ADVANCING.
+           MOVE 1 TO WS-MES.
+           PERFORM 420-STAT-MOSTRAR-TOTAL UNTIL WS-MES > 13.
+
+       420-STAT-MOSTRAR-TOTAL.
+           MOVE WS-T-STATS-TOTAL (WS-MES)
+               TO WS-VALOR-HORA-DISPLAY.
+           IF (WS-MES NOT = 13)
+               DISPLAY WS-VALOR-HORA-DISPLAY WITH NO ADVANCING
+           ELSE
+               DISPLAY WS-VALOR-HORA-DISPLAY.
+           ADD 1 TO WS-MES.
+           
 
        END PROGRAM TP-1.
