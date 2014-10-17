@@ -424,7 +424,6 @@
            SEARCH ALL WS-T-CONS-CAMPO
                AT END DISPLAY "ERROR: CONS NO ENCONTRADO EN WS-T-CONS"
                WHEN WS-T-CONS-CONS(WS-T-CONS-I) = WS-MENOR-CONS
-               DISPLAY " * NOMBRE: " WS-T-CONS-NOMBRE(WS-T-CONS-I).
            MOVE 0 TO WS-TOT-CONS-VAL.
            MOVE 0 TO WS-TOT-CONS-HS.
            PERFORM 145-IMPRIMIR-LN-ENC-CLI.
@@ -468,7 +467,8 @@
            WRITE LIS-NOM-LINEA FROM LN-ENC1.
            WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
            WRITE LIS-NOM-LINEA FROM LN-ENC2.
-           MOVE 4 TO LN-NRO-LINEA.
+           WRITE LIS-NOM-LINEA FROM LN-LINEA-BL.
+           MOVE 5 TO LN-NRO-LINEA.
 
        145-IMPRIMIR-LN-ENC-CLI.
            PERFORM 340-LN-SALTO-DE-PAGINA.
@@ -484,8 +484,8 @@
            PERFORM 170-VALOR-FECHA.
            MOVE 0 TO WS-TOT-FECHA-HS.
            MOVE 0 TO WS-TOT-FECHA-VAL.
-           DISPLAY " * VALOR-HORA-FECHA: " WS-VALOR-HORA.
            PERFORM 320-IMPRIMIR-LN-ENC-CLI-FECHA.
+           PERFORM 330-IMPRIMIR-LN-ENC-TABLA-CLI.
            PERFORM 180-FECHA UNTIL (HS1-EOF = "SI" AND
                                     HS2-EOF = "SI" AND
                                     HS3-EOF = "SI") OR
@@ -527,19 +527,18 @@
            MOVE 0 TO WS-TOT-CLI-HS.
            MOVE 0 TO WS-TOT-CLI-VAL.
            PERFORM 190-DET-MENOR-CLIE.
-           PERFORM 330-IMPRIMIR-LN-ENC-TABLA-CLI.
-           PERFORM 210-CLIENTES UNTIL (HS1-EOF = "SI" AND
+           PERFORM 210-CLIENTE UNTIL (HS1-EOF = "SI" AND
                                        HS2-EOF = "SI" AND
                                        HS3-EOF = "SI") OR
-                              (WS-MENOR-FECHA NOT = HS1-FECHA AND
-                               WS-MENOR-FECHA NOT = HS2-FECHA AND
-                               WS-MENOR-FECHA NOT = HS3-FECHA) OR
-                              (WS-MENOR-CONS NOT = HS1-CONS AND
-                               WS-MENOR-CONS NOT = HS2-CONS AND
-                               WS-MENOR-CONS NOT = HS3-CONS) OR
-                              (WS-MENOR-CLIENTE NOT = HS1-CLIENTE AND
-                               WS-MENOR-CLIENTE NOT = HS2-CLIENTE AND
-                               WS-MENOR-CLIENTE NOT = HS3-CLIENTE).
+                               (NOT (WS-MENOR-CONS = HS1-CONS AND
+                                WS-MENOR-FECHA = HS1-FECHA AND
+                                WS-MENOR-CLIENTE = HS1-CLIENTE)) AND
+                               (NOT (WS-MENOR-CONS = HS2-CONS AND
+                                WS-MENOR-FECHA = HS2-FECHA AND
+                                WS-MENOR-CLIENTE = HS2-CLIENTE)) AND
+                               (NOT (WS-MENOR-CONS = HS3-CONS AND
+                                WS-MENOR-FECHA = HS3-FECHA AND
+                                WS-MENOR-CLIENTE = HS3-CLIENTE)).
            PERFORM 280-IMPRIMIR-LN-TOTAL-CLI.
            ADD WS-TOT-CLI-HS TO WS-TOT-FECHA-HS.
            ADD WS-TOT-CLI-VAL TO WS-TOT-FECHA-VAL.
@@ -559,9 +558,8 @@
               WS-MENOR-FECHA = HS3-FECHA
                MOVE HS3-CLIENTE TO WS-MENOR-CLIENTE
            END-IF.
-           DISPLAY " * MENOR_CLIE: " WS-MENOR-CLIENTE.
 
-       210-CLIENTES.
+       210-CLIENTE.
            PERFORM 220-HS1-CLIENTE UNTIL HS1-EOF = "SI" OR
                                    WS-MENOR-CLIENTE NOT = HS1-CLIENTE OR
                                    WS-MENOR-FECHA NOT = HS1-FECHA OR
@@ -609,9 +607,6 @@
            ADD WS-LIS-HS-CANT-HORAS TO WS-TOT-CLI-HS.
            MULTIPLY WS-LIS-HS-CANT-HORAS BY WS-VALOR-HORA
                     GIVING WS-VALOR.
-           DISPLAY "CANT-HORAS: " WS-LIS-HS-CANT-HORAS.
-           DISPLAY "VAL-VALOR-HORA: " VAL-VALOR-HORA.
-           DISPLAY "WS-VALOR: " WS-VALOR.
            ADD WS-VALOR TO WS-TOT-CLI-VAL.
            PERFORM 260-IMPRIMIR-LN-FILA-CLI.
 
