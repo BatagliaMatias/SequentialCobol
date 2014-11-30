@@ -106,6 +106,8 @@
               DISPLAY "  RECORD NOT EXIST"
             ELSE
               DISPLAY "ROLL NO: " PERFIL.
+              DISPLAY FVIGENCIA.
+              DISPLAY TARIFA.
 
 
        END PROGRAM CONSULTORES.

@@ -112,6 +112,10 @@
               DISPLAY "  RECORD NOT EXIST"
             ELSE
               DISPLAY "ROLL NO: " CONS.
+              DISPLAY FECHA.
+              DISPLAY CLIENTE.
+              DISPLAY CANT-HORAS.
+              DISPLAY OBSERV.
 
 
        END PROGRAM HORAS.
