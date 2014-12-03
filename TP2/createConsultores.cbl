@@ -13,7 +13,7 @@
        DATA DIVISION.
         FILE SECTION.
          FD indfile1
-          VALUE OF FILE-ID IS "CONSULTORES.TXT".
+          VALUE OF FILE-ID IS "CONSULTORES.DAT".
           01 fileind1.
             03 COD-CONS PIC 9(3).
             03 FECHA-INGRESO PIC X(8).

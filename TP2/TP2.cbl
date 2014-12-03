@@ -29,9 +29,14 @@
            SELECT PAR ASSIGN TO DISK
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS PAR-FS.
-
+           SELECT ARCHTRABAJO ASSIGN TO DISK.
        DATA DIVISION.
        FILE SECTION.
+   *****VER ACA. FALTA DEFINIR BIEN
+       SD ARCHTRABAJO DATA RECORD IS REG-TRA.
+       01 REG-TRA.
+           03 REGISTRO PIC X.
+
        FD HOR
           VALUE OF FILE-ID IS "HORAS.DAT".
           01 HOR-REG.
@@ -45,7 +50,7 @@
                03 HOR-OBSERV PIC X(30).
 
        FD CON
-       VALUE OF FILE-ID IS "CONSULTORES.TXT".
+       VALUE OF FILE-ID IS "CONSULTORES.DAT".
        01 CON-REG.
            03 CON-COD-CONS PIC 9(3).
            03 CON-FECHA-INGRESO PIC X(8).
@@ -75,7 +80,7 @@
            03 PARAM-PERFIL PIC X.
            03 PARAM-FVIGENCIA PIC X(10).
        01 PAR-SALIDA.
-           03 RESULTADO PIC 9(5).
+           03 PARAM-TARIFA PIC 9(7)V99.
        01 COD-OPER PIC X.
 
        01 HOR-FS PIC X(2).
@@ -134,8 +139,8 @@
            MOVE WS-FECHA TO PARAM-FVIGENCIA.
            MOVE 'X' TO PARAM-PERFIL.
            PERFORM 070-IMPRIMIR-ENCAB.
-           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
-
+           
+           
            PERFORM 080-RECORRER-HOR.
            PERFORM 020-FIN.
            STOP RUN.
@@ -171,6 +176,10 @@
            CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
 
        030-LEER-CON.
+           READ CON RECORD.
+           IF CON-NO
+               DISPLAY 'ERROR DE LECTURA EN CON'
+               STOP RUN.
 
        040-LEER-HOR.
            READ HOR NEXT RECORD.
@@ -213,10 +222,11 @@
        100-PROCESAR-CONS-HOR.
            IF HOR-FECHA <= PAR-FECHA-HASTA AND
            HOR-CLIENTE <= PAR-CLIENTE-HASTA
-               DISPLAY '--------'
-               DISPLAY HOR-CLIENTE
-               DISPLAY HOR-FECHA
-               DISPLAY HOR-CANT-HORAS.
+               MOVE HOR-CONS TO CON-COD-CONS
+               PERFORM 030-LEER-CON
+               CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER
+               DISPLAY CON-REG
+               DISPLAY CON-TELEFONO.
       *        leer cons usando el campo de hor, mezclar registros y
       *        mandarlos para SORT
            PERFORM 040-LEER-HOR.

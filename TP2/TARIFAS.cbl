@@ -35,7 +35,7 @@
            03 PARAM-PERFIL PIC X.
            03 PARAM-FVIGENCIA PIC X(10).
        01 PAR-SALIDA.
-           03 RESULTADO PIC 9(5).
+           03 PAR-TARIFA PIC 9(7)V99.
        01 COD-OPER PIC X.
        PROCEDURE DIVISION USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -56,10 +56,10 @@
             MOVE PARAM-PERFIL TO PERFIL
             MOVE PARAM-FVIGENCIA TO FVIGENCIA
             READ TAR RECORD
-            DISPLAY TARIFA.
+            MOVE TARIFA TO PAR-TARIFA.
 
-        
-        MOVE 0 TO PAR-SALIDA
-        
+
+
+
       ** add other procedures here
        EXIT PROGRAM.
