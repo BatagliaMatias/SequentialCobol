@@ -35,7 +35,14 @@
    *****VER ACA. FALTA DEFINIR BIEN
        SD ARCHTRABAJO DATA RECORD IS REG-TRA.
        01 REG-TRA.
-           03 REGISTRO PIC X.
+           03 REG-TRA-APEYNOM PIC X(25).
+           03 REG-TRA-COD-CONS PIC 9(3).
+           03 REG-TRA-TELEFONO PIC 9(10).
+           03 REG-TRA-DESC-PER PIC X(15).
+           03 REG-TRA-CLIENTE PIC 9(4).
+           03 REG-TRA-FECHA PIC X(8).
+           03 REG-TRA-CANT-HORAS PIC 9(2)V99.
+           03 REG-TRA-TARIFA PIC 9(7)V99.
 
        FD HOR
           VALUE OF FILE-ID IS "HORAS.DAT".
@@ -125,8 +132,8 @@
 
            03 WS-FEC-8-DD   PIC 9(02).
 
+       01 WS-AT-EOF         PIC X(02).
 
-       
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        MAIN-PROCEDURE.
@@ -140,8 +147,15 @@
            MOVE 'X' TO PARAM-PERFIL.
            PERFORM 070-IMPRIMIR-ENCAB.
            
-           
-           PERFORM 080-RECORRER-HOR.
+
+      *     PERFORM 080-RECORRER-HOR.
+           SORT ARCHTRABAJO
+             ON ASCENDING KEY REG-TRA-APEYNOM
+             ON ASCENDING KEY REG-TRA-COD-CONS
+             ON ASCENDING KEY REG-TRA-CLIENTE
+             ON ASCENDING KEY REG-TRA-FECHA
+             INPUT PROCEDURE 080-RECORRER-HOR
+             OUTPUT PROCEDURE 110-IMPRIMIR-LINEA
            PERFORM 020-FIN.
            STOP RUN.
 
@@ -225,9 +239,26 @@
                MOVE HOR-CONS TO CON-COD-CONS
                PERFORM 030-LEER-CON
                CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER
-               DISPLAY CON-REG
-               DISPLAY CON-TELEFONO.
-      *        leer cons usando el campo de hor, mezclar registros y
-      *        mandarlos para SORT
+               MOVE CON-APEYNOM TO REG-TRA-APEYNOM
+               MOVE CON-COD-CONS TO REG-TRA-COD-CONS
+               MOVE CON-TELEFONO TO REG-TRA-TELEFONO
+               MOVE CON-PERFIL TO PER-PERFIL
+               READ PER RECORD
+               MOVE PER-DESCRIPCION TO REG-TRA-DESC-PER
+               MOVE HOR-CLIENTE TO REG-TRA-CLIENTE
+               MOVE HOR-FECHA TO REG-TRA-FECHA
+               MOVE HOR-CANT-HORAS TO REG-TRA-CANT-HORAS
+               MOVE PARAM-TARIFA TO REG-TRA-TARIFA
+               RELEASE REG-TRA.
            PERFORM 040-LEER-HOR.
+
+       110-IMPRIMIR-LINEA.
+           RETURN ARCHTRABAJO INTO REG-TRA
+               AT END
+                   SET WS-AT-EOF TO "SI"
+               NOT AT END
+                   SET WS-AT-EOF TO "NO"
+           END-RETURN
+           DISPLAY "REG-TRA:" REG-TRA.
+
        END PROGRAM TP2.
