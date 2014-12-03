@@ -4,21 +4,22 @@
        ENVIRONMENT DIVISION.
         INPUT-OUTPUT SECTION.
          FILE-CONTROL.
-           SELECT indfile1 ASSIGN TO DISK
+           SELECT TAR ASSIGN TO DISK
            ORGANIZATION IS INDEXED
            ACCESS MODE IS RANDOM
-           RECORD KEY IS PERFIL
-           ALTERNATE RECORD KEY IS FVIGENCIA WITH DUPLICATES.
+           RECORD KEY IS TAR-KEY.
 
 
        DATA DIVISION.
         FILE SECTION.
-         FD indfile1
+         FD TAR
           VALUE OF FILE-ID IS "TARIFAS.DAT".
-          01 fileind1.
-            03 PERFIL PIC X.
-            03 FVIGENCIA PIC X(10).
-            03 TARIFA PIC 9(7)V99.
+           01 TAR-REG.
+            02 TAR-KEY.
+                03 PERFIL PIC X.
+                03 FVIGENCIA PIC X(10).
+            02 TAR-DATA.
+                03 TARIFA PIC 9(7)V99.
 
          WORKING-STORAGE SECTION.
           01 CHOICE PIC 9.
@@ -27,7 +28,7 @@
 
        PROCEDURE DIVISION.
         PARA1.
-          OPEN I-O indfile1.
+          OPEN I-O TAR.
 
          PERFORM UNTIL CH1='N'
           DISPLAY "MENU::"
@@ -61,7 +62,7 @@
 
            DISPLAY " ".
 
-           WRITE fileind1
+           WRITE TAR-REG
             INVALID KEY DISPLAY"  RECORD IS ALREADY EXIST"
            END-WRITE.
 
@@ -70,7 +71,7 @@
             DISPLAY " ".
             DISPLAY "ENTER THE RECORD YOU WANT TO DELETE".
             ACCEPT PERFIL.
-            DELETE indfile1
+            DELETE TAR
              INVALID KEY DISPLAY "  RECORD NOT EXIST"
             END-DELETE.
 
@@ -79,7 +80,7 @@
             DISPLAY " ".
             DISPLAY "ENTER THE ROLL NO YOU WANT TO UPDATE".
             ACCEPT PERFIL.
-            READ indfile1
+            READ TAR
              INVALID KEY MOVE 'N' TO REXIST
             END-READ.
             IF REXIST='N'
@@ -89,7 +90,7 @@
               ACCEPT PERFIL
             END-IF.
 
-            REWRITE fileind1
+            REWRITE TAR-REG
               INVALID KEY DISPLAY "  RECORD NOT READED"
             END-REWRITE.
 
@@ -99,7 +100,8 @@
            DISPLAY " ".
            DISPLAY "ENTER THE ROLL NO YOU WANT TO SEE".
            ACCEPT PERFIL.
-           READ indfile1
+           ACCEPT FVIGENCIA.
+           READ TAR
               INVALID KEY MOVE 'N' TO REXIST
            END-READ.
             IF REXIST='N'

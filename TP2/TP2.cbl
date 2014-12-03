@@ -12,10 +12,9 @@
          FILE-CONTROL.
            SELECT HOR ASSIGN TO DISK
            ORGANIZATION IS INDEXED
-           ACCESS MODE IS RANDOM
-           RECORD KEY IS HOR-CONS
-           ALTERNATE RECORD KEY IS HOR-FECHA WITH DUPLICATES
-           ALTERNATE RECORD KEY IS HOR-CLIENTE WITH DUPLICATES
+           ACCESS MODE IS DYNAMIC
+           RECORD KEY IS HOR-KEY
+           ALTERNATE RECORD KEY IS HOR-ALT-KEY WITH DUPLICATES
            FILE STATUS IS HOR-FS.
 
            SELECT CON ASSIGN TO DISK
@@ -34,13 +33,16 @@
        DATA DIVISION.
        FILE SECTION.
        FD HOR
-       VALUE OF FILE-ID IS "HORAS.DAT".
-       01 HOR-REG.
-           03 HOR-CONS PIC 9(3).
-           03 HOR-FECHA PIC X(8).
-           03 HOR-CLIENTE PIC 9(4).
-           03 HOR-CANT-HORAS PIC 9(2)V99.
-           03 HOR-OBSERV PIC X(30).
+          VALUE OF FILE-ID IS "HORAS.DAT".
+          01 HOR-REG.
+            02 HOR-KEY.
+               03 HOR-CONS PIC 9(3).
+               03 HOR-ALT-KEY.
+                   04 HOR-FECHA PIC X(8).
+                   04 HOR-CLIENTE PIC 9(4).
+           02 HOR-DATOS.
+               03 HOR-CANT-HORAS PIC 9(2)V99.
+               03 HOR-OBSERV PIC X(30).
 
        FD CON
        VALUE OF FILE-ID IS "CONSULTORES.TXT".
@@ -70,7 +72,8 @@
       *-----------------------
        WORKING-STORAGE SECTION.
        01 PAR-ENTRADA.
-           03 PRIMER-OPERANDO PIC 9(3).
+           03 PARAM-PERFIL PIC X.
+           03 PARAM-FVIGENCIA PIC X(10).
        01 PAR-SALIDA.
            03 RESULTADO PIC 9(5).
        01 COD-OPER PIC X.
@@ -100,11 +103,13 @@
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        MAIN-PROCEDURE.
            PERFORM 010-INICIO.
-           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
-           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
-           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
-           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
            PERFORM 050-LEER-PAR.
+           MOVE '2012-12-12' TO PARAM-FVIGENCIA.
+           MOVE 'X' TO PARAM-PERFIL.
+           PERFORM 070-IMPRIMIR-ENCAB.
+           CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
+
+           PERFORM 080-RECORRER-HOR.
            PERFORM 020-FIN.
            STOP RUN.
 
@@ -114,8 +119,6 @@
            OPEN INPUT PER.
            OPEN INPUT PAR.
            MOVE 'O' TO COD-OPER.
-           MOVE 0 TO PRIMER-OPERANDO.
-           MOVE 0 TO RESULTADO.
            CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
            MOVE 'P' TO COD-OPER.
            IF(NOT CON-OK) AND (NOT CON-EOF)
@@ -143,6 +146,10 @@
        030-LEER-CON.
 
        040-LEER-HOR.
+           READ HOR NEXT RECORD.
+           IF NOT HOR-OK AND NOT HOR-EOF
+               DISPLAY 'ERROR DE LECTURA EN SIGUIENTE HOR'
+               STOP RUN.
 
        050-LEER-PAR.
            READ PAR RECORD.
@@ -157,4 +164,31 @@
                STOP RUN.
 
 
+
+       070-IMPRIMIR-ENCAB.
+           DISPLAY "FALTA 070-IMPRIMIR-ENCAB".
+
+       080-RECORRER-HOR.
+           MOVE PAR-FECHA-DESDE TO HOR-FECHA.
+           MOVE PAR-CLIENTE-DESDE TO HOR-CLIENTE.
+           START HOR KEY IS NOT LESS THAN HOR-ALT-KEY
+            INVALID KEY
+                DISPLAY 'ERROR AL BUSCAR EN HOR'
+                STOP RUN.
+           PERFORM 040-LEER-HOR.
+           PERFORM 100-PROCESAR-CONS-HOR UNTIL
+                                       HOR-EOF OR
+                                       (HOR-FECHA > PAR-FECHA-HASTA AND
+                                       HOR-CLIENTE > PAR-CLIENTE-HASTA).
+
+
+
+       100-PROCESAR-CONS-HOR.
+           IF HOR-FECHA <= PAR-FECHA-HASTA AND
+           HOR-CLIENTE <= PAR-CLIENTE-HASTA
+               DISPLAY '--------'
+               DISPLAY HOR-CLIENTE
+               DISPLAY HOR-FECHA
+               DISPLAY HOR-CANT-HORAS.
+           PERFORM 040-LEER-HOR.
        END PROGRAM TP2.
