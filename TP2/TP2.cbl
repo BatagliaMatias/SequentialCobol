@@ -190,5 +190,7 @@
                DISPLAY HOR-CLIENTE
                DISPLAY HOR-FECHA
                DISPLAY HOR-CANT-HORAS.
+      *        leer cons usando el campo de hor, mezclar registros y
+      *        mandarlos para SORT
            PERFORM 040-LEER-HOR.
        END PROGRAM TP2.
