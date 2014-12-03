@@ -132,6 +132,39 @@
 
            03 WS-FEC-8-DD   PIC 9(02).
 
+       01 WS-ENC-L1.
+           03 FILLER                   PIC X(7) VALUE "Fecha: ".
+           03 WS-ENC-L1-AAAA           PIC 9999.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L1-MM             PIC 99.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L1-DD             PIC 99.
+           03 FILLER                   PIC X(51) VALUE ALL " ".
+           03 FILLER                   PIC X(9) VALUE "Hoja nro ".
+           03 WS-ENC-L1-HOJA           PIC 99 VALUE IS 0.
+
+       01 WS-ENC-L5.
+           03 FILLER                   PIC X(13) VALUE "Fecha desde: ".
+           03 WS-ENC-L5-AAAA-DESDE     PIC 9999.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L5-MM-DESDE       PIC 99.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L5-DD-DESDE       PIC 99.
+           03 FILLER                   PIC X(8) VALUE " hasta: ".
+           03 WS-ENC-L5-AAAA-HASTA     PIC 9999.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L5-MM-HASTA       PIC 99.
+           03 FILLER                   PIC X VALUE "/".
+           03 WS-ENC-L5-DD-HASTA       PIC 99.
+
+       01 WS-ENC-L6.
+           03 FILLER                  PIC X(15) VALUE "Cliente desde: ".
+           03 WS-ENC-L6-CLI-DESDE     PIC 9999.
+           03 FILLER                  PIC X(8) VALUE " hasta: ".
+           03 WS-ENC-L6-CLI-HASTA     PIC 9999.
+
+       01 WS-NRO-LINEA PIC 9(2) VALUE IS 1.
+
        01 WS-AT-EOF         PIC X(02).
 
        PROCEDURE DIVISION.
@@ -216,7 +249,29 @@
 
 
        070-IMPRIMIR-ENCAB.
-           DISPLAY "FALTA 070-IMPRIMIR-ENCAB".
+           MOVE FUNCTION CURRENT-DATE (1:4) TO WS-ENC-L1-AAAA.
+           MOVE FUNCTION CURRENT-DATE (5:2) TO WS-ENC-L1-MM.
+           MOVE FUNCTION CURRENT-DATE (7:2) TO WS-ENC-L1-DD.
+           ADD 1 TO WS-ENC-L1-HOJA.
+           MOVE 1 TO WS-NRO-LINEA.
+           DISPLAY WS-ENC-L1.
+           DISPLAY " ".
+           DISPLAY "LISTADO DE FACTURACION".
+           DISPLAY " ".
+           MOVE PAR-FECHA-DESDE TO WS-FEC-8.
+           MOVE WS-FEC-8-AA TO WS-ENC-L5-AAAA-DESDE.
+           MOVE WS-FEC-8-MM TO WS-ENC-L5-MM-DESDE.
+           MOVE WS-FEC-8-DD TO WS-ENC-L5-DD-DESDE.
+           MOVE PAR-FECHA-HASTA TO WS-FEC-8.
+           MOVE WS-FEC-8-AA TO WS-ENC-L5-AAAA-HASTA.
+           MOVE WS-FEC-8-MM TO WS-ENC-L5-MM-HASTA.
+           MOVE WS-FEC-8-DD TO WS-ENC-L5-DD-HASTA.
+           DISPLAY WS-ENC-L5.
+           MOVE PAR-CLIENTE-DESDE TO WS-ENC-L6-CLI-DESDE.
+           MOVE PAR-CLIENTE-HASTA TO WS-ENC-L6-CLI-HASTA.
+           DISPLAY WS-ENC-L6.
+           DISPLAY " ".
+           ADD 7 TO WS-NRO-LINEA.
 
        080-RECORRER-HOR.
            MOVE PAR-FECHA-DESDE TO HOR-FECHA.
