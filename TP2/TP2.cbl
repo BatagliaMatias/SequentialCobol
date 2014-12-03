@@ -98,13 +98,40 @@
            88 PAR-NO VALUE '23'.
            88 PAR-EOF VALUE '10'.
 
+       01 WS-FECHA PIC X(10) VALUE '----------'.
+
+       01 FILLER REDEFINES WS-FECHA.
+
+           03 WS-FEC-AA PIC 9(04).
+
+           03 FILLER      PIC X .
+
+           03 WS-FEC-MM PIC 9(02).
+
+           03 FILLER      PIC X.
+
+           03 WS-FEC-DD PIC 9(02).
+
+       01 WS-FEC-8.
+
+           03 WS-FEC-8-AA    PIC 9(04).
+
+           03 WS-FEC-8-MM PIC 9(02).
+
+           03 WS-FEC-8-DD   PIC 9(02).
+
+
        
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        MAIN-PROCEDURE.
            PERFORM 010-INICIO.
            PERFORM 050-LEER-PAR.
-           MOVE '2012-12-12' TO PARAM-FVIGENCIA.
+           MOVE PAR-FECHA-DESDE TO WS-FEC-8
+           MOVE WS-FEC-8-AA   TO WS-FEC-AA.
+           MOVE WS-FEC-8-MM TO WS-FEC-MM.
+           MOVE WS-FEC-8-DD   TO WS-FEC-DD.
+           MOVE WS-FECHA TO PARAM-FVIGENCIA.
            MOVE 'X' TO PARAM-PERFIL.
            PERFORM 070-IMPRIMIR-ENCAB.
            CALL 'TARIFAS' USING PAR-ENTRADA,PAR-SALIDA,COD-OPER.
