@@ -8,15 +8,24 @@
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        PROGRAM-ID. TARIFAS.
        ENVIRONMENT DIVISION.
-      *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-       CONFIGURATION SECTION.
-      *-----------------------
-       INPUT-OUTPUT SECTION.
-      *-----------------------
+        INPUT-OUTPUT SECTION.
+         FILE-CONTROL.
+           SELECT indfile1 ASSIGN TO DISK
+           ORGANIZATION IS INDEXED
+           ACCESS MODE IS RANDOM
+           RECORD KEY IS PERFIL
+           ALTERNATE RECORD KEY IS FVIGENCIA WITH DUPLICATES.
+
+
        DATA DIVISION.
-      *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-       FILE SECTION.
-      *-----------------------
+        FILE SECTION.
+         FD indfile1
+          VALUE OF FILE-ID IS "TARIFAS.DAT".
+          01 fileind1.
+            03 PERFIL PIC X.
+            03 FVIGENCIA PIC X(10).
+            03 TARIFA PIC 9(7)V99.
+
        WORKING-STORAGE SECTION.
       *-----------------------
        LINKAGE SECTION.
@@ -32,8 +41,19 @@
       **
       * The main procedure of the program
       **
-        DISPLAY "Hello world"
+        EVALUATE COD-OPER
+            WHEN 'O'
+            OPEN I-O indfile1
+            DISPLAY "ARCHIVO ABIERTO"
+
+            WHEN 'C'
+            CLOSE indfile1
+            DISPLAY "ARCHIVO CERRADO"
+
+            WHEN 'P'
+            DISPLAY "PROCESAR".
+        
         MOVE 0 TO PAR-SALIDA
-        STOP RUN.
+        
       ** add other procedures here
-       END PROGRAM TARIFAS. 
+       EXIT PROGRAM.
