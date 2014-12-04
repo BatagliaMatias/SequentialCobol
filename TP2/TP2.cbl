@@ -8,6 +8,10 @@
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        PROGRAM-ID. TP2.
        ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           DECIMAL-POINT IS COMMA.
+
         INPUT-OUTPUT SECTION.
          FILE-CONTROL.
            SELECT HOR ASSIGN TO DISK
@@ -40,7 +44,10 @@
            03 REG-TRA-TELEFONO PIC 9(10).
            03 REG-TRA-DESC-PER PIC X(15).
            03 REG-TRA-CLIENTE PIC 9(4).
-           03 REG-TRA-FECHA PIC X(8).
+           03 REG-TRA-FECHA.
+             05 REG-TRA-AAAA PIC 9999.
+             05 REG-TRA-MM PIC 99.
+             05 REG-TRA-DD PIC 99.
            03 REG-TRA-CANT-HORAS PIC 9(2)V99.
            03 REG-TRA-TARIFA PIC 9(7)V99.
 
@@ -178,13 +185,59 @@
        01 WS-ENC-CONS-L2.
            03 FILLER              PIC X(8) VALUE "Perfil: ".
            03 WS-ENC-CONS-L2-PER  PIC X(15).
+       01 WS-ENC-CLI.
+           03 FILLER              PIC X(12) VALUE "     Cliente".
+           03 FILLER              PIC X(12) VALUE "       Fecha".
+           03 FILLER              PIC X(12) VALUE " Cant. Horas".
+           03 FILLER              PIC X(12) VALUE "      Tarifa".
+           03 FILLER              PIC X(12) VALUE "     Importe".
+
+       01 WS-LIN-IND.
+           03 FILLER              PIC X(8) VALUE "        ".
+           03 WS-LIN-IND-CLI      PIC 9(4).
+           03 FILLER              PIC X(2) VALUE "  ".
+           03 WS-LIN-IND-AAAA     PIC 9999.
+           03 FILLER              PIC X VALUE "/".
+           03 WS-LIN-IND-MM       PIC 99.
+           03 FILLER              PIC X VALUE "/".
+           03 WS-LIN-IND-DD       PIC 99.
+           03 FILLER              PIC X(7) VALUE "       ".
+           03 WS-LIN-IND-CH       PIC Z9,99.
+           03 FILLER              PIC X(4) VALUE "    ".
+           03 WS-LIN-IND-TAR      PIC Z.ZZ9,99.
+           03 FILLER              PIC XX VALUE  " $".
+           03 WS-LIN-IND-IMP      PIC ZZZ.ZZ9,99.
+
+       01 WS-LIN-TOT-GRAL.
+           03 FILLER              PIC X(66) VALUE "Total General:".
+           03 FILLER              PIC X VALUE "$".
+           03 WS-LIN-TOT-GRAL-VAL PIC Z.ZZZ.Z99,99 VALUE IS ZERO.
+
+       01 WS-LIN-TOT-CONS.
+           03 FILLER              PIC X(66) VALUE "Total Consultor:".
+           03 FILLER              PIC X VALUE "$".
+           03 WS-LIN-TOT-CONS-VAL PIC Z.ZZZ.Z99,99 VALUE IS ZERO.
+
+       01 WS-LIN-TOT-CLI.
+           03 FILLER              PIC X(66) VALUE "Total Cliente:".
+           03 FILLER              PIC X VALUE "$".
+           03 WS-LIN-TOT-CLI-VAL  PIC Z.ZZZ.Z99,99 VALUE IS ZERO.
 
        01 WS-NRO-LINEA PIC 9(2) VALUE IS 1.
 
        01 WS-AT-EOF         PIC X(02).
 
        01 WS-CONS           PIC 999.
+
        01 WS-CLI            PIC 9999.
+
+       01 WS-IMPORTE        PIC 9(6)v99 VALUE IS ZERO.
+
+       01 WS-TOTAL-GRAL     PIC 9(7)v99 VALUE IS ZERO.
+
+       01 WS-TOTAL-CONS     PIC 9(7)v99 VALUE IS ZERO.
+
+       01 WS-TOTAL-CLI      PIC 9(7)v99 VALUE IS ZERO.
 
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -337,10 +390,13 @@
                    SET WS-AT-EOF TO "NO"
            END-RETURN
            PERFORM 120-IMPRIMIR-CONS UNTIL WS-AT-EOF = "SI".
-           DISPLAY "FALTA TOTAL GRAL".
+           MOVE WS-TOTAL-GRAL TO WS-LIN-TOT-GRAL-VAL.
+           MOVE WS-LIN-TOT-GRAL TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
 
        120-IMPRIMIR-CONS.
            MOVE REG-TRA-COD-CONS TO WS-CONS.
+           MOVE ZERO TO WS-TOTAL-CONS.
            MOVE REG-TRA-APEYNOM TO WS-ENC-CONS-L1-NOM.
            MOVE REG-TRA-COD-CONS TO WS-ENC-CONS-L1-COD.
            MOVE REG-TRA-TELEFONO TO WS-ENC-CONS-L1-TEL.
@@ -349,9 +405,14 @@
            MOVE REG-TRA-DESC-PER TO WS-ENC-CONS-L2-PER.
            MOVE WS-ENC-CONS-L2 TO WS-LINEA.
            PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
            PERFORM 140-IMPRIMIR-CLI UNTIL (WS-AT-EOF = "SI"
                                     OR REG-TRA-COD-CONS <> WS-CONS).
-           DISPLAY "FALTA TOTAL CONS".
+           PERFORM 130-IMPRIMIR-LINEA.
+           MOVE WS-TOTAL-CONS TO WS-LIN-TOT-CONS-VAL.
+           MOVE WS-LIN-TOT-CONS TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
 
        130-IMPRIMIR-LINEA.
            DISPLAY WS-LINEA.
@@ -361,15 +422,33 @@
                PERFORM 070-IMPRIMIR-ENCAB.
 
        140-IMPRIMIR-CLI.
-           DISPLAY "FALTA 140-IMPRIMIR-CLI"
+           MOVE WS-ENC-CLI TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
            MOVE REG-TRA-CLIENTE TO WS-CLI.
+           MOVE ZERO TO WS-TOTAL-CLI.
            PERFORM 140-IMPRIMIR-FECHA UNTIL (WS-AT-EOF = "SI"
                                     OR REG-TRA-COD-CONS <> WS-CONS
                                     OR REG-TRA-CLIENTE <> WS-CLI).
-           DISPLAY "FALTA TOTAL CLIENTE".
+           PERFORM 130-IMPRIMIR-LINEA.
+           MOVE WS-TOTAL-CLI TO WS-LIN-TOT-CLI-VAL.
+           MOVE WS-LIN-TOT-CLI TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
 
        140-IMPRIMIR-FECHA.
-           DISPLAY "FECHA"
+           MOVE REG-TRA-CLIENTE TO WS-LIN-IND-CLI.
+           MOVE REG-TRA-AAAA TO WS-LIN-IND-AAAA.
+           MOVE REG-TRA-MM TO WS-LIN-IND-MM.
+           MOVE REG-TRA-DD TO WS-LIN-IND-DD.
+           MOVE REG-TRA-CANT-HORAS TO WS-LIN-IND-CH.
+           MOVE REG-TRA-TARIFA TO WS-LIN-IND-TAR.
+           MULTIPLY REG-TRA-CANT-HORAS BY REG-TRA-TARIFA
+               GIVING WS-IMPORTE.
+           MOVE WS-IMPORTE TO WS-LIN-IND-IMP.
+           ADD WS-IMPORTE TO WS-TOTAL-CLI.
+           ADD WS-IMPORTE TO WS-TOTAL-CONS.
+           ADD WS-IMPORTE TO WS-TOTAL-GRAL.
+           MOVE WS-LIN-IND TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
            RETURN ARCHTRABAJO INTO REG-TRA
                AT END
                    SET WS-AT-EOF TO "SI"
