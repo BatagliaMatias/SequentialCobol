@@ -239,20 +239,38 @@
 
        01 WS-TOTAL-CLI      PIC 9(7)v99 VALUE IS ZERO.
 
+       01 WS-G                         PIC 99.
+       01 WS-I                         PIC 99 VALUE IS 1.
+       01 WS-J                         PIC 99.
+
+       01 WS-T-PER-COUNT    PIC 9(4) VALUE IS 1.
+
+       01 WS-T-PER.
+           03 WS-T-PER-CAMPO OCCURS 0 TO 26 TIMES
+                             DEPENDING ON WS-T-PER-COUNT
+                             ASCENDING KEY IS WS-T-PER-PERFIL
+                             INDEXED BY WS-T-PER-I.
+               05 WS-T-PER-PERFIL       PIC X.
+               05 WS-T-PER-DESC         PIC X(15).
+               05 WS-T-PER-COND         PIC X(50).
+
+       01 WS-T-PER-CAMPO-TEMP PIC X(66).
+
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        MAIN-PROCEDURE.
            PERFORM 010-INICIO.
            PERFORM 050-LEER-PAR.
+           PERFORM 060-LEER-PER.
            MOVE PAR-FECHA-DESDE TO WS-FEC-8
            MOVE WS-FEC-8-AA   TO WS-FEC-AA.
            MOVE WS-FEC-8-MM TO WS-FEC-MM.
            MOVE WS-FEC-8-DD   TO WS-FEC-DD.
            MOVE WS-FECHA TO PARAM-FVIGENCIA.
+           PERFORM 150-CARGAR-PER UNTIL PER-EOF.
+           PERFORM 160-ORDENAR-T-PER.
       *     MOVE 'X' TO PARAM-PERFIL.
            PERFORM 070-IMPRIMIR-ENCAB.
-
-
       *     PERFORM 080-RECORRER-HOR.
            SORT ARCHTRABAJO
              ON ASCENDING KEY REG-TRA-APEYNOM
@@ -383,14 +401,13 @@
                MOVE CON-APEYNOM TO REG-TRA-APEYNOM
                MOVE CON-COD-CONS TO REG-TRA-COD-CONS
                MOVE CON-TELEFONO TO REG-TRA-TELEFONO
-               MOVE CON-PERFIL TO PER-PERFIL
 
-               PERFORM 060-LEER-PER
-
-               MOVE PER-DESCRIPCION TO REG-TRA-DESC-PER
+               SEARCH ALL WS-T-PER-CAMPO
+                   AT END DISPLAY "ERROR: PERFIL NO ENCONTRADO."
+                   WHEN WS-T-PER-PERFIL(WS-T-PER-I) = CON-PERFIL
+               MOVE WS-T-PER-DESC(WS-T-PER-I) TO REG-TRA-DESC-PER
       *        HAY QUE LEER BIEN PER PARA QUE LA DESCRIPCION SEA LA OK
       *         MOVE CON-PERFIL TO REG-TRA-DESC-PER
-
                MOVE HOR-CLIENTE TO REG-TRA-CLIENTE
                MOVE HOR-FECHA TO REG-TRA-FECHA
                MOVE HOR-CANT-HORAS TO REG-TRA-CANT-HORAS
@@ -471,5 +488,27 @@
                NOT AT END
                    SET WS-AT-EOF TO "NO"
            END-RETURN.
+
+       150-CARGAR-PER.
+           MOVE PER-REG TO WS-T-PER-CAMPO(WS-T-PER-COUNT).
+           ADD 1 TO WS-T-PER-COUNT.
+           PERFORM 060-LEER-PER.
+           
+       160-ORDENAR-T-PER.
+           MOVE WS-T-PER-COUNT TO WS-I.
+      * BURBUJEO
+           SUBTRACT 1 FROM WS-I.
+           PERFORM VARYING WS-G FROM 1 BY 1 UNTIL WS-G = WS-I
+               PERFORM VARYING WS-J FROM WS-G BY 1 UNTIL WS-J > WS-I
+                   IF WS-T-PER-PERFIL(WS-J) < WS-T-PER-PERFIL(WS-G) THEN
+                       MOVE WS-T-PER-CAMPO(WS-G)
+                           TO WS-T-PER-CAMPO-TEMP
+                       MOVE WS-T-PER-CAMPO(WS-J)
+                           TO WS-T-PER-CAMPO(WS-G)
+                       MOVE WS-T-PER-CAMPO-TEMP
+                           TO WS-T-PER-CAMPO(WS-J)
+                   END-IF
+               END-PERFORM
+           END-PERFORM.
 
        END PROGRAM TP2.
