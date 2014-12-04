@@ -132,6 +132,10 @@
 
            03 WS-FEC-8-DD   PIC 9(02).
 
+       01 WS-LINEA PIC X(79).
+
+       01 WS-LINEA-BLANCO PIC X(79) VALUE ALL " ".
+
        01 WS-ENC-L1.
            03 FILLER                   PIC X(7) VALUE "Fecha: ".
            03 WS-ENC-L1-AAAA           PIC 9999.
@@ -163,9 +167,24 @@
            03 FILLER                  PIC X(8) VALUE " hasta: ".
            03 WS-ENC-L6-CLI-HASTA     PIC 9999.
 
+       01 WS-ENC-CONS-L1.
+           03 FILLER              PIC X(19) VALUE "Apellido y Nombre: ".
+           03 WS-ENC-CONS-L1-NOM  PIC X(25).
+           03 FILLER              PIC X(15) VALUE " Codigo Cons.: ".
+           03 WS-ENC-CONS-L1-COD  PIC 999.
+           03 FILLER              PIC X(6) VALUE " Tel: ".
+           03 WS-ENC-CONS-L1-TEL  PIC 9(10).
+
+       01 WS-ENC-CONS-L2.
+           03 FILLER              PIC X(8) VALUE "Perfil: ".
+           03 WS-ENC-CONS-L2-PER  PIC X(15).
+
        01 WS-NRO-LINEA PIC 9(2) VALUE IS 1.
 
        01 WS-AT-EOF         PIC X(02).
+
+       01 WS-CONS           PIC 999.
+       01 WS-CLI            PIC 9999.
 
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -179,7 +198,7 @@
            MOVE WS-FECHA TO PARAM-FVIGENCIA.
            MOVE 'X' TO PARAM-PERFIL.
            PERFORM 070-IMPRIMIR-ENCAB.
-           
+
 
       *     PERFORM 080-RECORRER-HOR.
            SORT ARCHTRABAJO
@@ -188,7 +207,7 @@
              ON ASCENDING KEY REG-TRA-CLIENTE
              ON ASCENDING KEY REG-TRA-FECHA
              INPUT PROCEDURE 080-RECORRER-HOR
-             OUTPUT PROCEDURE 110-IMPRIMIR-LINEA
+             OUTPUT PROCEDURE 110-IMPRIMIR-LISTADO
            PERFORM 020-FIN.
            STOP RUN.
 
@@ -254,10 +273,12 @@
            MOVE FUNCTION CURRENT-DATE (7:2) TO WS-ENC-L1-DD.
            ADD 1 TO WS-ENC-L1-HOJA.
            MOVE 1 TO WS-NRO-LINEA.
-           DISPLAY WS-ENC-L1.
-           DISPLAY " ".
-           DISPLAY "LISTADO DE FACTURACION".
-           DISPLAY " ".
+           MOVE WS-ENC-L1 TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           MOVE "LISTADO DE FACTURACION" TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
            MOVE PAR-FECHA-DESDE TO WS-FEC-8.
            MOVE WS-FEC-8-AA TO WS-ENC-L5-AAAA-DESDE.
            MOVE WS-FEC-8-MM TO WS-ENC-L5-MM-DESDE.
@@ -266,12 +287,13 @@
            MOVE WS-FEC-8-AA TO WS-ENC-L5-AAAA-HASTA.
            MOVE WS-FEC-8-MM TO WS-ENC-L5-MM-HASTA.
            MOVE WS-FEC-8-DD TO WS-ENC-L5-DD-HASTA.
-           DISPLAY WS-ENC-L5.
+           MOVE WS-ENC-L5 TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
            MOVE PAR-CLIENTE-DESDE TO WS-ENC-L6-CLI-DESDE.
            MOVE PAR-CLIENTE-HASTA TO WS-ENC-L6-CLI-HASTA.
-           DISPLAY WS-ENC-L6.
-           DISPLAY " ".
-           ADD 7 TO WS-NRO-LINEA.
+           MOVE WS-ENC-L6 TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
 
        080-RECORRER-HOR.
            MOVE PAR-FECHA-DESDE TO HOR-FECHA.
@@ -307,13 +329,52 @@
                RELEASE REG-TRA.
            PERFORM 040-LEER-HOR.
 
-       110-IMPRIMIR-LINEA.
+       110-IMPRIMIR-LISTADO.
            RETURN ARCHTRABAJO INTO REG-TRA
                AT END
                    SET WS-AT-EOF TO "SI"
                NOT AT END
                    SET WS-AT-EOF TO "NO"
            END-RETURN
-           DISPLAY "REG-TRA:" REG-TRA.
+           PERFORM 120-IMPRIMIR-CONS UNTIL WS-AT-EOF = "SI".
+           DISPLAY "FALTA TOTAL GRAL".
+
+       120-IMPRIMIR-CONS.
+           MOVE REG-TRA-COD-CONS TO WS-CONS.
+           MOVE REG-TRA-APEYNOM TO WS-ENC-CONS-L1-NOM.
+           MOVE REG-TRA-COD-CONS TO WS-ENC-CONS-L1-COD.
+           MOVE REG-TRA-TELEFONO TO WS-ENC-CONS-L1-TEL.
+           MOVE WS-ENC-CONS-L1 TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           MOVE REG-TRA-DESC-PER TO WS-ENC-CONS-L2-PER.
+           MOVE WS-ENC-CONS-L2 TO WS-LINEA.
+           PERFORM 130-IMPRIMIR-LINEA.
+           PERFORM 140-IMPRIMIR-CLI UNTIL (WS-AT-EOF = "SI"
+                                    OR REG-TRA-COD-CONS <> WS-CONS).
+           DISPLAY "FALTA TOTAL CONS".
+
+       130-IMPRIMIR-LINEA.
+           DISPLAY WS-LINEA.
+           MOVE WS-LINEA-BLANCO TO WS-LINEA.
+           ADD 1 TO WS-NRO-LINEA.
+           IF WS-NRO-LINEA > 60
+               PERFORM 070-IMPRIMIR-ENCAB.
+
+       140-IMPRIMIR-CLI.
+           DISPLAY "FALTA 140-IMPRIMIR-CLI"
+           MOVE REG-TRA-CLIENTE TO WS-CLI.
+           PERFORM 140-IMPRIMIR-FECHA UNTIL (WS-AT-EOF = "SI"
+                                    OR REG-TRA-COD-CONS <> WS-CONS
+                                    OR REG-TRA-CLIENTE <> WS-CLI).
+           DISPLAY "FALTA TOTAL CLIENTE".
+
+       140-IMPRIMIR-FECHA.
+           DISPLAY "FECHA"
+           RETURN ARCHTRABAJO INTO REG-TRA
+               AT END
+                   SET WS-AT-EOF TO "SI"
+               NOT AT END
+                   SET WS-AT-EOF TO "NO"
+           END-RETURN.
 
        END PROGRAM TP2.
