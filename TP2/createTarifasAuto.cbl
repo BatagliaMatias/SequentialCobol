@@ -39,24 +39,29 @@
          MOVE 100 TO TARIFA.
          WRITE TAR-REG.
 
+         MOVE 'X' TO PERFIL.
+         MOVE '2013-01-01' TO FVIGENCIA.
+         MOVE 150 TO TARIFA.
+         WRITE TAR-REG.
+
          MOVE 'Z' TO PERFIL.
-         MOVE '2014-12-14' TO FVIGENCIA.
+         MOVE '2014-01-01' TO FVIGENCIA.
          MOVE 200 TO TARIFA.
          WRITE TAR-REG.
 
          MOVE 'Z' TO PERFIL.
-         MOVE '2012-12-12' TO FVIGENCIA.
+         MOVE '2012-01-01' TO FVIGENCIA.
          MOVE 100 TO TARIFA.
          WRITE TAR-REG.
 
          MOVE 'A' TO PERFIL.
-         MOVE '2014-12-14' TO FVIGENCIA.
+         MOVE '2013-06-07' TO FVIGENCIA.
          MOVE 200 TO TARIFA.
          WRITE TAR-REG.
 
          MOVE 'A' TO PERFIL.
          MOVE '2012-12-12' TO FVIGENCIA.
-         MOVE 100 TO TARIFA.
+         MOVE 140 TO TARIFA.
          WRITE TAR-REG.
 
 
@@ -67,7 +72,7 @@
 
          MOVE 'B' TO PERFIL.
          MOVE '2012-12-12' TO FVIGENCIA.
-         MOVE 100 TO TARIFA.
+         MOVE 76 TO TARIFA.
          WRITE TAR-REG.
 
          CLOSE TAR.

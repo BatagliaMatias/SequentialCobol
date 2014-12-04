@@ -78,6 +78,27 @@
           MOVE "UnaObservacion" TO HOR-OBSERV.
           WRITE HOR-REG.
 
+          MOVE 100 TO HOR-CONS.
+          MOVE "20131112" TO HOR-FECHA.
+          MOVE 1234 TO HOR-CLIENTE.
+          MOVE 20 TO HOR-CANT-HORAS.
+          MOVE "UnaObservacion" TO HOR-OBSERV.
+          WRITE HOR-REG.
+
+          MOVE 100 TO HOR-CONS.
+          MOVE "20130101" TO HOR-FECHA.
+          MOVE 1234 TO HOR-CLIENTE.
+          MOVE 80 TO HOR-CANT-HORAS.
+          MOVE "UnaObservacion" TO HOR-OBSERV.
+          WRITE HOR-REG.
+
+          MOVE 100 TO HOR-CONS.
+          MOVE "20130101" TO HOR-FECHA.
+          MOVE 1212 TO HOR-CLIENTE.
+          MOVE 10 TO HOR-CANT-HORAS.
+          MOVE "UnaObservacion" TO HOR-OBSERV.
+          WRITE HOR-REG.
+
           CLOSE HOR.
           STOP RUN.
        END PROGRAM HORASAUTO.
