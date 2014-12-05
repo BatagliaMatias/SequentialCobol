@@ -35,12 +35,15 @@
            DISPLAY "Generando VAL-HORA.DAT".
            OPEN OUTPUT VAL.
 
+
+
            MOVE 1 TO VAL-CONS.
            MOVE "20130313" TO VAL-FEC-DESDE.
            MOVE "20141013" TO VAL-FEC-HASTA.
            MOVE 30 TO VAL-VALOR-HORA.
            WRITE REG-VAL.
 
+           
            MOVE 49 TO VAL-CONS.
            MOVE "20120215" TO VAL-FEC-DESDE.
            MOVE "20141013" TO VAL-FEC-HASTA.
@@ -52,7 +55,7 @@
            MOVE "20141013" TO VAL-FEC-HASTA.
            MOVE 25 TO VAL-VALOR-HORA.
            WRITE REG-VAL.
-
+           
            MOVE 99 TO VAL-CONS.
            MOVE "20140115" TO VAL-FEC-DESDE.
            MOVE "20141013" TO VAL-FEC-HASTA.

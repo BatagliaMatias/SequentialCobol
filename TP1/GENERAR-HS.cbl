@@ -60,11 +60,40 @@
            OPEN OUTPUT HS1, HS2, HS3.
 
            MOVE 1 TO HS1-CONS.
-           MOVE "20141012" TO HS1-FECHA.
+           MOVE "20140112" TO HS1-FECHA.
+           MOVE 1 TO HS1-CLIENTE.
+           MOVE 4 TO HS1-CANT-HORAS.
+           MOVE "NINGUNA" TO HS1-OBSERV.
+           WRITE REG-HS1.
+
+           MOVE 1 TO HS1-CONS.
+           MOVE "20140112" TO HS1-FECHA.
+           MOVE 1 TO HS1-CLIENTE.
+           MOVE 3 TO HS1-CANT-HORAS.
+           MOVE "Volvio el mismo dia" TO HS1-OBSERV.
+           WRITE REG-HS1.
+
+           MOVE 1 TO HS1-CONS.
+           MOVE "20140113" TO HS1-FECHA.
            MOVE 1 TO HS1-CLIENTE.
            MOVE 2 TO HS1-CANT-HORAS.
            MOVE "NINGUNA" TO HS1-OBSERV.
            WRITE REG-HS1.
+
+           MOVE 1 TO HS1-CONS.
+           MOVE "20140214" TO HS1-FECHA.
+           MOVE 2 TO HS1-CLIENTE.
+           MOVE 5 TO HS1-CANT-HORAS.
+           MOVE "NINGUNA" TO HS1-OBSERV.
+           WRITE REG-HS1.
+
+           MOVE 1 TO HS1-CONS.
+           MOVE "20140314" TO HS1-FECHA.
+           MOVE 3 TO HS1-CLIENTE.
+           MOVE 5 TO HS1-CANT-HORAS.
+           MOVE "NINGUNA" TO HS1-OBSERV.
+           WRITE REG-HS1.
+
 
            MOVE 1 TO HS1-CONS.
            MOVE "20141012" TO HS1-FECHA.
@@ -77,6 +106,13 @@
            MOVE "20141013" TO HS1-FECHA.
            MOVE 3 TO HS1-CLIENTE.
            MOVE 2 TO HS1-CANT-HORAS.
+           MOVE "NINGUNA" TO HS1-OBSERV.
+           WRITE REG-HS1.
+
+           MOVE 99 TO HS1-CONS.
+           MOVE "20140901" TO HS1-FECHA.
+           MOVE 1 TO HS1-CLIENTE.
+           MOVE 0,5 TO HS1-CANT-HORAS.
            MOVE "NINGUNA" TO HS1-OBSERV.
            WRITE REG-HS1.
 
@@ -94,6 +130,13 @@
            MOVE "NINGUNA" TO HS2-OBSERV.
            WRITE REG-HS2.
 
+           MOVE 49 TO HS2-CONS.
+           MOVE "20141101" TO HS2-FECHA.
+           MOVE 2 TO HS2-CLIENTE.
+           MOVE 1 TO HS2-CANT-HORAS.
+           MOVE "NINGUNA" TO HS2-OBSERV.
+           WRITE REG-HS2.
+
            MOVE 1 TO HS3-CONS.
            MOVE "20141012" TO HS3-FECHA.
            MOVE 1 TO HS3-CLIENTE.
@@ -105,6 +148,13 @@
            MOVE "20141105" TO HS3-FECHA.
            MOVE 2 TO HS3-CLIENTE.
            MOVE 1,5 TO HS3-CANT-HORAS.
+           MOVE "NINGUNA" TO HS3-OBSERV.
+           WRITE REG-HS3.
+
+           MOVE 50 TO HS3-CONS.
+           MOVE "20141205" TO HS3-FECHA.
+           MOVE 2 TO HS3-CLIENTE.
+           MOVE 3 TO HS3-CANT-HORAS.
            MOVE "NINGUNA" TO HS3-OBSERV.
            WRITE REG-HS3.
 

@@ -1,21 +1,53 @@
-Fecha: 2014/10/17                                                   Hoja nro 01
+Fecha: 2014/12/05                                                   Hoja nro 01
 
                         TIMES - LISTADO HORAS TRABAJADAS
 
 
 COD. CONSULTOR:   1  NOMBRE: AMAZING ADAM
 
-FECHA: 2014/10/12
+FECHA: 2014/01/12
+
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           1 |           4,00 |    120,00 | NINGUNA
+           1 |           3,00 |     90,00 | Volvio el mismo dia
+TOTAL CLIENTE            7,00      210,00
+
+TOTAL FECHA              7,00      210,00
+FECHA: 2014/01/13
 
  Cod Cliente | Cantidad horas |   Valor   | Obervaciones
 --------------------------------------------------------------------------------
            1 |           2,00 |     60,00 | NINGUNA
+TOTAL CLIENTE            2,00       60,00
+
+TOTAL FECHA              2,00       60,00
+FECHA: 2014/02/14
+
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           2 |           5,00 |    150,00 | NINGUNA
+TOTAL CLIENTE            5,00      150,00
+
+TOTAL FECHA              5,00      150,00
+FECHA: 2014/03/14
+
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           3 |           5,00 |    150,00 | NINGUNA
+TOTAL CLIENTE            5,00      150,00
+
+TOTAL FECHA              5,00      150,00
+FECHA: 2014/10/12
+
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
            1 |           0,50 |     15,00 | NINGUNA
-TOTAL CLIENTE            2,50       75,00
+TOTAL CLIENTE            0,50       15,00
            3 |           3,00 |     90,00 | NINGUNA
 TOTAL CLIENTE            3,00       90,00
 
-TOTAL FECHA              5,50      165,00
+TOTAL FECHA              3,50      105,00
 FECHA: 2014/10/13
 
  Cod Cliente | Cantidad horas |   Valor   | Obervaciones
@@ -25,7 +57,11 @@ TOTAL CLIENTE            2,00       60,00
 
 TOTAL FECHA              2,00       60,00
 
-TOTAL CONSULTOR          7,50      225,00
+TOTAL CONSULTOR         24,50      735,00
+Fecha: 2014/12/05                                                   Hoja nro 02
+
+                        TIMES - LISTADO HORAS TRABAJADAS
+
 
 COD. CONSULTOR:  49  NOMBRE: BORING BOB
 
@@ -37,8 +73,16 @@ FECHA: 2014/10/01
 TOTAL CLIENTE            1,00       35,00
 
 TOTAL FECHA              1,00       35,00
+FECHA: 2014/11/01
 
-TOTAL CONSULTOR          1,00       35,00
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           2 |           1,00 |     35,00 | NINGUNA
+TOTAL CLIENTE            1,00       35,00
+
+TOTAL FECHA              1,00       35,00
+
+TOTAL CONSULTOR          2,00       70,00
 
 COD. CONSULTOR:  50  NOMBRE: CRAFTY CHARLES
 
@@ -50,16 +94,32 @@ FECHA: 2014/11/05
 TOTAL CLIENTE            1,50       52,50
 
 TOTAL FECHA              1,50       52,50
+FECHA: 2014/12/05
 
-TOTAL CONSULTOR          1,50       52,50
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           2 |           3,00 |    105,00 | NINGUNA
+TOTAL CLIENTE            3,00      105,00
+
+TOTAL FECHA              3,00      105,00
+
+TOTAL CONSULTOR          4,50      157,50
 
 COD. CONSULTOR:  99  NOMBRE: DERISIVE DAVID
 
+FECHA: 2014/09/01
+
+ Cod Cliente | Cantidad horas |   Valor   | Obervaciones
+--------------------------------------------------------------------------------
+           1 |           0,50 |     17,50 | NINGUNA
+TOTAL CLIENTE            0,50       17,50
+
+TOTAL FECHA              0,50       17,50
 FECHA: 2014/10/01
 
  Cod Cliente | Cantidad horas |   Valor   | Obervaciones
 --------------------------------------------------------------------------------
-Fecha: 2014/10/17                                                   Hoja nro 02
+Fecha: 2014/12/05                                                   Hoja nro 03
 
                         TIMES - LISTADO HORAS TRABAJADAS
 
@@ -68,6 +128,6 @@ TOTAL CLIENTE            0,50       17,50
 
 TOTAL FECHA              0,50       17,50
 
-TOTAL CONSULTOR          0,50       17,50
+TOTAL CONSULTOR          1,00       35,00
 
-TOTAL GENERAL           10,50      330,00
+TOTAL GENERAL           32,00      997,50
