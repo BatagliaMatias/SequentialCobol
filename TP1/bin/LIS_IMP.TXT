@@ -3,26 +3,84 @@ Fecha: 2014/12/05                                                   Hoja nro 01
                           LISTADO DE TOTALES DE HORAS
 
 COD. CONSULTOR:       1
+FECHA:         14/01/12
+COD. CLIENTE:         1
+TOTAL HORAS:       7,00
+TOTAL VALOR:     210,00
+
+COD. CONSULTOR:       1
+FECHA:         14/01/13
+COD. CLIENTE:         1
+TOTAL HORAS:       2,00
+TOTAL VALOR:      60,00
+
+COD. CONSULTOR:       1
+FECHA:         14/02/14
+COD. CLIENTE:         2
+TOTAL HORAS:       5,00
+TOTAL VALOR:     150,00
+
+COD. CONSULTOR:       1
+FECHA:         14/03/14
+COD. CLIENTE:         3
+TOTAL HORAS:       5,00
+TOTAL VALOR:     150,00
+
+COD. CONSULTOR:       1
+FECHA:         14/10/12
+COD. CLIENTE:         1
+TOTAL HORAS:       0,50
+TOTAL VALOR:      15,00
+
+COD. CONSULTOR:       1
+FECHA:         14/10/12
+COD. CLIENTE:         3
+TOTAL HORAS:       3,00
+TOTAL VALOR:      90,00
+
+COD. CONSULTOR:       1
 FECHA:         14/10/13
 COD. CLIENTE:         3
-TOTAL HORAS:      24,50
-TOTAL VALOR:     735,00
+TOTAL HORAS:       2,00
+TOTAL VALOR:      60,00
 
 COD. CONSULTOR:      49
-FECHA:         14/11/01
-COD. CLIENTE:         2
-TOTAL HORAS:       2,00
-TOTAL VALOR:      70,00
-
-COD. CONSULTOR:      50
-FECHA:         14/12/05
-COD. CLIENTE:         2
-TOTAL HORAS:       4,50
-TOTAL VALOR:     157,50
-
-COD. CONSULTOR:      99
 FECHA:         14/10/01
 COD. CLIENTE:         1
 TOTAL HORAS:       1,00
 TOTAL VALOR:      35,00
+
+COD. CONSULTOR:      49
+FECHA:         14/11/01
+COD. CLIENTE:         2
+TOTAL HORAS:       1,00
+TOTAL VALOR:      35,00
+
+COD. CONSULTOR:      50
+FECHA:         14/11/05
+COD. CLIENTE:         2
+TOTAL HORAS:       1,50
+TOTAL VALOR:      52,50
+
+Fecha: 2014/12/05                                                   Hoja nro 02
+
+                          LISTADO DE TOTALES DE HORAS
+
+COD. CONSULTOR:      50
+FECHA:         14/12/05
+COD. CLIENTE:         2
+TOTAL HORAS:       3,00
+TOTAL VALOR:     105,00
+
+COD. CONSULTOR:      99
+FECHA:         14/09/01
+COD. CLIENTE:         1
+TOTAL HORAS:       0,50
+TOTAL VALOR:      17,50
+
+COD. CONSULTOR:      99
+FECHA:         14/10/01
+COD. CLIENTE:         1
+TOTAL HORAS:       0,50
+TOTAL VALOR:      17,50
 
