@@ -44,9 +44,23 @@
           WRITE HOR-REG.
 
           MOVE 001 TO HOR-CONS.
+          MOVE "20130203" TO HOR-FECHA.
+          MOVE 1111 TO HOR-CLIENTE.
+          MOVE 20 TO HOR-CANT-HORAS.
+          MOVE "UnaObservacion" TO HOR-OBSERV.
+          WRITE HOR-REG.
+
+          MOVE 001 TO HOR-CONS.
           MOVE "20131212" TO HOR-FECHA.
           MOVE 1111 TO HOR-CLIENTE.
           MOVE 50 TO HOR-CANT-HORAS.
+          MOVE "UnaObservacion" TO HOR-OBSERV.
+          WRITE HOR-REG.
+
+          MOVE 001 TO HOR-CONS.
+          MOVE "20130512" TO HOR-FECHA.
+          MOVE 1144 TO HOR-CLIENTE.
+          MOVE 35 TO HOR-CANT-HORAS.
           MOVE "UnaObservacion" TO HOR-OBSERV.
           WRITE HOR-REG.
 
