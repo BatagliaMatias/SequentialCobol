@@ -37,6 +37,9 @@
            SELECT LIS-NOM ASSIGN TO "LIS_NOM.TXT"
                ORGANIZATION IS LINE SEQUENTIAL.
 
+           SELECT LIS-EST ASSIGN TO "LIS_EST.TXT"
+               ORGANIZATION IS LINE SEQUENTIAL.
+
        DATA DIVISION.
 
        FILE SECTION.
@@ -85,6 +88,10 @@
        FD LIS-NOM
            LABEL RECORD OMITTED.
        01 LIS-NOM-LINEA               PIC X(80).
+
+       FD LIS-EST
+           LABEL RECORD OMITTED.
+       01 LIS-EST-LINEA              PIC X(250).
 
        WORKING-STORAGE SECTION.
 
@@ -279,6 +286,52 @@
            03 FILLER                  PIC X(1) VALUE ALL " ".
            03 LN-LINEA-TOT-GRAL-VAL   PIC ZZZZ.ZZ9,99.
 
+       01 LE-ENC.
+           03 FILLER PIC X(32) VALUE "ESTADISTICA DE HS TRABAJADAS POR".
+           03 FILLER PIC X(31) VALUE " MES Y POR CONSULTOR EN EL ANIO".
+
+       01 LE-THEADER.
+           03 FILLER PIC X(26) VALUE ALL " ".
+           03 FILLER PIC X(15) VALUE " ENERO       ".
+           03 FILLER PIC X(15) VALUE " FEBRERO     ".
+           03 FILLER PIC X(15) VALUE " MARZO       ".
+           03 FILLER PIC X(15) VALUE " ABRIL       ".
+           03 FILLER PIC X(15) VALUE " MAYO        ".
+           03 FILLER PIC X(15) VALUE " JUNIO       ".
+           03 FILLER PIC X(15) VALUE " JULIO       ".
+           03 FILLER PIC X(15) VALUE " AGOSTO      ".
+           03 FILLER PIC X(15) VALUE " SEPTIEMBRE  ".
+           03 FILLER PIC X(15) VALUE " OCTUBRE     ".
+           03 FILLER PIC X(15) VALUE " NOVIEMBRE   ".
+           03 FILLER PIC X(15) VALUE " DICIEMBRE   ".
+           03 FILLER PIC X(15) VALUE " TOTAL       ".
+
+       01 LE-TROWS.
+           03 LE-TR-NOMBRE PIC X(26) VALUE ALL " ".
+           03 LE-TR-MESES OCCURS 12 TIMES.
+             05 FILLER PIC X VALUE " ".
+             05 LE-TR-HS PIC 999,99.
+             05 FILLER PIC XXX VALUE " (".
+             05 LE-TR-PC PIC 999.
+             05 FILLER PIC XX VALUE "%)".
+          03 LE-TR-TOTAL.
+             05 FILLER PIC X VALUE " ".
+             05 LE-TR-TT PIC 999,99.
+
+       01 LE-TFOOTER.
+           03 FILLER PIC X(26) VALUE "TOTAL ".
+           03 LE-TF-MESES OCCURS 12 TIMES.
+             05 FILLER PIC X VALUE " ".
+             05 LE-TF-HS PIC 999,99.
+             05 FILLER PIC XXX VALUE " (".
+             05 LE-TF-PC PIC 999.
+             05 FILLER PIC XX VALUE "%)".
+          03 LE-TF-TOTAL.
+             05 FILLER PIC X VALUE " ".
+             05 LE-TF-TT PIC 999,99.
+
+       01 LE-LINEA-BL             PIC X(250) VALUE ALL " ".
+
        01  WS-FECHA-HOY.
            03  WS-FECHA-HOY-AAAA       PIC  9(4).
            03  WS-FECHA-HOY-MM         PIC  9(2).
@@ -320,6 +373,8 @@
        01 WS-TOT-CONS-VAL                    PIC 9(6)V99 VALUE IS ZERO.
        01 WS-TOT-CONS-HS                     PIC 9(3)V99 VALUE IS ZERO.
 
+       01 WS-PORC                           PIC 9(12)V9999.
+
        PROCEDURE DIVISION.
 
        MAIN-PROCEDURE.
@@ -356,7 +411,7 @@
                DISPLAY "ERROR: No se pudo abrir el archivo CONSUL.DAT"
                DISPLAY "ERROR:   FILE-STATUS: " CONS-ESTADO
                STOP RUN.
-           OPEN OUTPUT LIS-IMP, LIS-NOM.
+           OPEN OUTPUT LIS-IMP, LIS-NOM, LIS-EST.
 
        020-LEER-CONS.
            READ CONS AT END MOVE "SI" TO CONS-EOF.
@@ -390,7 +445,7 @@
            CLOSE HS1, HS2, HS3.
            CLOSE VAL.
            CLOSE CONS.
-           CLOSE LIS-IMP, LIS-NOM.
+           CLOSE LIS-IMP, LIS-NOM, LIS-EST.
 
        060-PROCESAR.
            PERFORM 070-LEER-HS1.
@@ -714,6 +769,8 @@
            PERFORM 370-STAT-SUMAR-FILAS UNTIL WS-I > 999.
            DISPLAY "ESTADISTICA DE HORAS TRABAJADAS POR MES Y POR CONSUL
       -            "TORA EN EL ANIO".
+           WRITE LIS-EST-LINEA FROM LE-ENC.
+           WRITE LIS-EST-LINEA FROM LE-LINEA-BL.
            DISPLAY " ".
            DISPLAY "                          " WITH NO ADVANCING.
            DISPLAY "ENE " WITH NO ADVANCING.
@@ -729,6 +786,7 @@
            DISPLAY "NOV " WITH NO ADVANCING.
            DISPLAY "DIC " WITH NO ADVANCING.
            DISPLAY "TOT ".
+           WRITE LIS-EST-LINEA FROM LE-THEADER.
            MOVE 1 TO WS-MES.
            MOVE 1 TO WS-I.
            PERFORM 390-STAT-MOSTRAR-HORAS UNTIL WS-I > 999.
@@ -755,7 +813,9 @@
                    WHEN WS-T-CONS-CONS (WS-T-CONS-I) = WS-I
                DISPLAY WS-T-CONS-NOMBRE(WS-T-CONS-I)
                    WITH NO ADVANCING
+               MOVE WS-T-CONS-NOMBRE(WS-T-CONS-I) TO LE-TR-NOMBRE
                PERFORM 400-STAT-MOSTRAR-MES UNTIL WS-MES > 13
+               WRITE LIS-EST-LINEA FROM LE-TROWS
            END-IF.
            ADD 1 TO WS-I.
 
@@ -764,22 +824,37 @@
                TO WS-VALOR-HORA-DISPLAY.
            IF (WS-MES NOT = 13)
                DISPLAY WS-VALOR-HORA-DISPLAY WITH NO ADVANCING
+               MOVE WS-T-STATS-HORAS (WS-I, WS-MES)
+                    TO LE-TR-HS (WS-MES)
+               DIVIDE WS-T-STATS-HORAS(WS-I, WS-MES)
+                      BY WS-T-STATS-HORAS(WS-I, 13)
+                      GIVING WS-PORC
+              MULTIPLY WS-PORC BY 100 GIVING LE-TR-PC (WS-MES)
            ELSE
                DISPLAY WS-VALOR-HORA-DISPLAY.
+               MOVE WS-T-STATS-HORAS (WS-I, WS-MES) TO LE-TR-TT
            ADD 1 TO WS-MES.
 
        410-STAT-MOSTRAR-TOTALES.
            DISPLAY "                   TOTAL " WITH NO ADVANCING.
            MOVE 1 TO WS-MES.
            PERFORM 420-STAT-MOSTRAR-TOTAL UNTIL WS-MES > 13.
+           WRITE LIS-EST-LINEA FROM LE-TFOOTER.
 
        420-STAT-MOSTRAR-TOTAL.
            MOVE WS-T-STATS-TOTAL (WS-MES)
                TO WS-VALOR-HORA-DISPLAY.
            IF (WS-MES NOT = 13)
                DISPLAY WS-VALOR-HORA-DISPLAY WITH NO ADVANCING
+               MOVE WS-T-STATS-TOTAL (WS-MES)
+                    TO LE-TF-HS (WS-MES)
+               DIVIDE WS-T-STATS-TOTAL (WS-MES)
+                      BY WS-T-STATS-TOTAL(13)
+                      GIVING WS-PORC
+              MULTIPLY WS-PORC BY 100 GIVING LE-TF-PC (WS-MES)
            ELSE
-               DISPLAY WS-VALOR-HORA-DISPLAY.
+               DISPLAY WS-VALOR-HORA-DISPLAY
+               MOVE WS-T-STATS-TOTAL (WS-MES) TO LE-TF-TT.
            ADD 1 TO WS-MES.
 
 
